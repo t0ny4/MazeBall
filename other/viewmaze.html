@@ -1,0 +1,86 @@
+<!doctype html>
+
+<html>
+ <head>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo="><!-- prevent favicon.ico requests -->
+  <title>Maze Array Viewer</title>
+
+  <style>
+  td { width: 30px; height: 30px; text-align: center; font-size: 0.75em; }
+  td.wall { background-color: #777; color: #ccc; }
+  td.recurse { background-color: #ddd; font-style: italic; font-size: 1.1em; }
+  th { border: 0; font-weight: normal; }
+  input, button { height: 2em; }
+  input { width: 60px; }
+  div{ margin-bottom: 10px; }
+  </style>
+ </head>
+
+ <body>
+  <div>
+    Level: <input type="number" id="level">
+    <span id="controls"></span>
+  </div>
+  <div id="output"></div>
+
+  <script type="module">
+
+	import { generateMazeData } from '../src/mazegen';
+
+	const defaultLevel = 5;
+
+	const controls = document.getElementById('controls');
+	const levelInput = document.getElementById('level');
+
+	let button =  document.createElement("button");
+	button.innerHTML = 'Generate Random Maze';
+	button.onclick = showMaze;
+	controls.appendChild(button);
+
+	levelInput.value = defaultLevel;
+	showMaze();
+
+
+	function showMaze() {
+
+		let level = parseInt(levelInput.value, 10);
+		if (!level || level < 1) {
+			levelInput.value = defaultLevel;
+			level = defaultLevel;
+		}
+
+		const maze = generateMazeData(level);
+
+		let html = '<table><tr><th></th>';
+
+		for (let x = 0; x < maze.sizeX; x++) {
+			html += '<th>' + x + '</th>';
+		}
+
+		html += '</tr>';
+
+		for (let z =  0; z < maze.size.z; z++) {
+     		html += '<tr>' + '<th>' + z + '</th>';
+			for (let x = 0; x < maze.size.x; x++) {
+				const val = maze.data[x][z];
+				if (val === false) {
+					html += '<td class="wall">' + val + '</td>';
+				} else {
+					if (typeof val == 'string') {
+						html += '<td class="recurse">' + val + '</td>';
+					} else {
+     					html += '<td>' + val + '</td>';
+     				}
+     			}
+			}
+			html += '</tr>';
+		}
+
+		html += '</table>';
+
+		document.getElementById('output').innerHTML = html;
+	}
+  </script>
+
+ </body>
+</html>
