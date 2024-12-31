@@ -6,20 +6,24 @@
   <title>Maze Array Viewer</title>
 
   <style>
-  td { width: 30px; height: 30px; text-align: center; font-size: 0.75em; }
-  td.wall { background-color: #777; color: #ccc; }
-  td.recurse { background-color: #ddd; font-style: italic; font-size: 1.1em; }
+  table.maze td, table.key th { width: 30px; height: 30px; text-align: center; }
+  td, th.sq { background-color: #ddd; font-style: italic; }
+  td.wall,th.wall { background-color: #777; color: #ccc; font-size: 0.8em; }
   th { border: 0; font-weight: normal; }
   input, button { height: 2em; }
   input { width: 60px; }
-  div{ margin-bottom: 10px; }
+  div { margin-bottom: 10px; }
+  span.title { border: 2px inset grey; margin-left: 20px; padding: 6px; background-color: #EEE; }
+  table.key { border: 1px solid black; }
+  table.key td { background-color: #F0F0F0; }
+  table.key td.h { background-color: #606060; color: white; text-align: center; }
   </style>
  </head>
 
  <body>
   <div>
     Level: <input type="number" id="level">
-    <span id="controls"></span>
+    <span id="controls"></span><span class="title">Visualize the MazeObject.data[x:&hArr;][z:&vArr;] array</span>
   </div>
   <div id="output"></div>
 
@@ -27,7 +31,7 @@
 
 	import { generateMazeData } from '../src/mazegen';
 
-	const defaultLevel = 5;
+	const defaultLevel = 7;
 
 	const controls = document.getElementById('controls');
 	const levelInput = document.getElementById('level');
@@ -51,7 +55,7 @@
 
 		const maze = generateMazeData(level);
 
-		let html = '<table><tr><th></th>';
+		let html = '<table class="maze"><tr><th></th>';
 
 		for (let x = 0; x < maze.size.x; x++) {
 			html += '<th>' + x + '</th>';
@@ -64,13 +68,11 @@
 			for (let x = 0; x < maze.size.x; x++) {
 				const val = maze.data[x][z];
 				if (val === false) {
-					html += '<td class="wall">' + val + '</td>';
+					html += '<td class="wall">false</td>';
+				} else if (val === '.') {
+					html += '<td>&nbsp;</td>';
 				} else {
-					if (typeof val == 'string') {
-						html += '<td class="recurse">' + val + '</td>';
-					} else {
-     					html += '<td>' + val + '</td>';
-     				}
+     				html += '<td>' + val + '</td>';
      			}
 			}
 			html += '</tr>';
@@ -81,6 +83,14 @@
 		document.getElementById('output').innerHTML = html;
 	}
   </script>
-
+  <table class="key">
+	<tr><td colspan=2 class="h">Key</th></tr>
+	<tr><th class="sq">S</th><td>Player Start Position</td></tr>
+	<tr><th class="sq">E</th><td>Path End</td></tr>
+	<tr><th class="sq">H</th><td>Hole in wall (exit)</td></tr>
+	<tr><th class="wall">false</th><td>Wall</td></tr>
+	<tr><th class="sq">*</th><td>Path from S to E</td></tr>
+	<tr><th class="sq">D</th><td>Dead end</td></tr>
+  </table>
  </body>
 </html>

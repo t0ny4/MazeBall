@@ -27,9 +27,10 @@ function generateSolidMaze(level) {
 
 	maze.start = pos.start;
 	maze.exit = pos.exit;
+	maze.end = pos.end;
 
 	// punch a hole in the outer wall for the player to exit through
-	maze.data[maze.exit.x][maze.exit.z] = 'E';
+	maze.data[maze.exit.x][maze.exit.z] = 'H';
 
 	maze.start.angle = 0;
 
@@ -83,6 +84,8 @@ function generateRandomMaze(level) {
 		rot = 3;
 	}
 
+	maze.data[maze.start.x][maze.start.z] = 'S';
+	maze.data[maze.end.x][maze.end.z] = 'E';
 	maze.start.angle = rot * HALF_PI;
 
 	return maze;
@@ -91,20 +94,15 @@ function generateRandomMaze(level) {
 
 /**
  * recursive function to create the maze path
- * @param {{data: [][], size : {x: number, z: number}}} maze
+ * @param {MazeObject} maze
  * @param {number} x
  * @param {number} z
- * @param {number} counter
- * @returns void
+ * @returns {boolean} true if a forward path from this square leads to the exit
  */
-function makePathFrom(maze, x, z, counter = 1) {
+function makePathFrom(maze, x, z) {
 
-	const id = counter;
-	counter++;
-
-	// mark the inital square as part of the path
-	// make it a string so that viewmaze.html knows it is the initial square
-	maze.data[x][z] = '' + id;
+	/** indicates if this square is the exit or one of the forward paths from this square leads to the exit */
+	let toExit = (x === maze.end.x && z === maze.end.z);
 
 	while (true) {
 
@@ -133,10 +131,22 @@ function makePathFrom(maze, x, z, counter = 1) {
 			available.push([-1, 0]);
 		}
 
-		// path has hit a dead end, this iteration is done
+		// either a dead end has been reached, or a previously available direction has
+		// been used since the last pass through this while loop
 		if (available.length == 0) {
-			return;
+			// mark dead ends
+			if (maze.data[x][z] === false) {
+				maze.data[x][z] = 'D';
+			} else if (toExit) {
+				maze.data[x][z] = '*';
+			}
+			// path has nowhere new to go, this iteration is done
+			return toExit;
 		}
+
+		// square, by default, is basic path
+		// must do this here because of the dead end check in the code above
+		maze.data[x][z] = '.';
 
 		if (available.length == 1) {
 			// this is the only available direction
@@ -146,17 +156,24 @@ function makePathFrom(maze, x, z, counter = 1) {
 			dir = available[Math.floor(Math.random() * available.length)];
 		}
 
-		// mark the adjacent square in the chosen direction as part of the path
-		maze.data[x + dir[0]][z + dir[1]] = id;
-
 		// the next but one square in the chosen direction is the starting
 		// point for the next iteration
-		makePathFrom(maze, x + dir[0] * 2, z + dir[1] * 2, counter);
+		const leadsToExit = makePathFrom(maze, x + dir[0] * 2, z + dir[1] * 2);
+
+		if (leadsToExit) {
+			maze.data[x + dir[0]][z + dir[1]] = '*';
+			toExit = true;
+		} else {
+			maze.data[x + dir[0]][z + dir[1]] = '.';
+		}
 
 		// if there was only one direction available previously, there can't be any
 		// directions left now. this iteration is done.
 		if (available.length == 1) {
-			return;
+			if (toExit) {
+				maze.data[x][z] = '*';
+			}
+			return toExit;
 		}
 	}
 }
@@ -195,6 +212,8 @@ function generateStartAndExit(size) {
 	exit.x = left ? 1 : size.x - 2;
 	const dx = left ? -1 : 1;
 
+	const end = {...exit};
+
 	// exit vertical or horizontal
 	if (Math.random() > 0.5) {
 		exit.z += dz;
@@ -202,7 +221,7 @@ function generateStartAndExit(size) {
 		exit.x += dx;
 	}
 
-	return {start, exit};
+	return {start, end, exit};
 }
 
 
