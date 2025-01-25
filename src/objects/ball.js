@@ -17,6 +17,8 @@ let gBallMesh;
 let gPhysicsBody;
 /** @type {THREE.Texture} */
 let gBallTexture;
+/** @type {function(number,number,number):void} */
+let gUpdateMazePosition = () => {console.warn('gUpdateMazePosition not set');};
 
 
 /** @returns {Promise<boolean>} */
@@ -42,9 +44,14 @@ function loadAssets() {
 
 
 /**
+ * @param {function(number,number,number):void} updatePositionFunc
  * @returns {[planck.Body, THREE.Mesh]}
  */
-function setup() {
+function setup(updatePositionFunc) {
+
+	if (typeof updatePositionFunc === 'function') {
+		gUpdateMazePosition = updatePositionFunc;
+	}
 
 	gPhysicsBody = global.physicsWorld.createBody({
 		type: 'dynamic',
@@ -109,7 +116,10 @@ function update() {
 
 	if (distanceX !== 0 || distanceZ !== 0) {
 		// update 3D ball position to match physics ball
-		gBallMesh.position.set(physBallPos.x, gBallRadius, physBallPosZ)
+		gBallMesh.position.set(physBallPos.x, gBallRadius, physBallPosZ);
+
+		// tell maze about new position
+		gUpdateMazePosition(physBallPos.x, gBallRadius, physBallPosZ);
 
 		// no need to calculate rotation in 1st person mode, as ball can't be seen
 		if (!global.firstPersonModeActive) {

@@ -28,9 +28,6 @@ const GameStates = Object.freeze({
 
 let gLevel = 1;
 let gGameState = GameStates.init;
-// maximum grid position values for the player to still be inside the current maze
-// minimum values are always zero
-let gMaxX, gMaxZ;
 
 document.addEventListener("DOMContentLoaded", () => {
 	loadAssets(
@@ -78,9 +75,10 @@ function setup() {
 	// physics & render must come first (in either order)
 	physics.setup();
 	render.setup();
-	// the rest of the setup functions come next in any order
+	// next comes maze
 	maze.setup();
-	player.setup();
+	// the rest of the setup functions come next in any order
+	player.setup(maze.updatePlayerPosition);
 	bindControlKeys();
 	debug.setup();
 	firstPerson.setup();
@@ -98,8 +96,6 @@ function game_loop() {
 
 		case GameStates.init: {
 			const mazeData = generateMazeData(gLevel);
-			gMaxX = mazeData.size.x - 1;
-			gMaxZ = mazeData.size.z - 1;
 			maze.create(mazeData);
 			player.setNewMaze(mazeData);
 			debug.reset();
@@ -120,8 +116,8 @@ function game_loop() {
 			// change from false to true
 			renderRequired |= firstPerson.update();
 			// check to see if we are outside the maze
-			const p = player.getGridPosition();
-			if (p.x < 0 || p.x > gMaxX || p.z < 0 || p.z > gMaxZ) {
+			const p = maze.getPlayerGridInfo();
+			if (p.type === 'O') {
 				gLevel++;
 				global.mazeExited = true;
 				gGameState = GameStates.fadeOut;

@@ -17,6 +17,9 @@ let gPlayerPhysicsObject;
 let gPlayerLight;
 /** in Radians */
 let gAngle = 0;
+/** @type {function(number,number,number):void} */
+let gUpdateMazePosition = () => {console.warn('gUpdateMazePosition not set');};
+
 
 const gZeroZero = new planck.Vec2(0, 0);
 const QUARTER_PI = Math.PI / 4;
@@ -28,10 +31,16 @@ function loadAssets() {
 	return actor.loadAssets();
 }
 
+/**
+ * @param {function(number,number,number):void} updatePositionFunc
+ */
+function setup(updatePositionFunc) {
 
-function setup() {
+	if (typeof updatePositionFunc === 'function') {
+		gUpdateMazePosition = updatePositionFunc;
+	}
 
-	[gPlayerPhysicsObject, gPlayer3DObject] = actor.setup();
+	[gPlayerPhysicsObject, gPlayer3DObject] = actor.setup(updatePositionFunc);
 
 	gPlayerLight = new THREE.PointLight(0xffe0e0, config.playerLightLevel);
 	gPlayerLight.castShadow = false;
@@ -113,22 +122,14 @@ function setPositionXZ(x, z) {
 	const pos = getPosition();
 	gPlayer3DObject.position.set(x, pos.y, z);
 	gPlayerPhysicsObject.setPosition({x, y: z});
+
+	// tell maze about new position
+	gUpdateMazePosition(x, pos.y, z);
 }
 
 
 function getPosition() {
 	return gPlayer3DObject.position;
-}
-
-
-/**
- * Returns the coords of the maze square the player is currently in
- * @returns {{x:number,z:number}}
- */
-function getGridPosition() {
-	const x = Math.floor(gPlayer3DObject.position.x + 0.5);
-	const z = Math.floor(gPlayer3DObject.position.z + 0.5);
-	return {x, z};
 }
 
 
@@ -171,17 +172,13 @@ const _MODULE = 'player.js';
 
 export {
 	_MODULE,
-	applyForce,
 	getAngle,
 	getCameraHeight,
-	getGridPosition,
 	getPosition,
 	hideMesh,
 	loadAssets,
 	setAngle,
 	setNewMaze,
-	setLinearVelocity,
-	setPositionXZ,
 	setup,
 	update,
 };

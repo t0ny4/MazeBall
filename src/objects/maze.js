@@ -16,6 +16,11 @@ const gFloorTextures = [];
 /** @type {planck.Body[]} */
 const gMazePhysicsBodies = [];
 
+const gPlayerPos = {x: 0, y: 0, z: 0};
+const gPlayerGridInfo = {x: 0, z: 0, type: ''};
+
+const gColourGreen = new THREE.Color(0x00ff00);
+
 /** @type {THREE.Scene} */
 let gScene
 /** @type {THREE.Camera} */
@@ -26,14 +31,19 @@ let gExitLight;
 let gWallMesh;
 /** @type {THREE.Mesh} */
 let gFloorMesh;
+/** @type {MazeObject} */
+let gCurrentMaze;
 
 
 function setup() {
 	gScene = global.scene;
 	gCamera = global.camera;
-	gExitLight = new THREE.PointLight(0x00ff00, 0);
-	global.scene.add(gExitLight);
+	gExitLight = new THREE.PointLight();
+	gScene.add(gExitLight);
 	global.exitLight = gExitLight;
+	gExitLight.color = gColourGreen;
+	gExitLight.intensity = 0;
+	gCurrentMaze = {size: {x: 0, z: 0}};
 }
 
 
@@ -75,6 +85,8 @@ function loadAssets() {
  */
 function create(maze) {
 
+	gCurrentMaze = maze;
+
 	// --- PHYSICS ---
 
 	// clear the old maze from the physics world, if one exists
@@ -88,15 +100,15 @@ function create(maze) {
 		position: {x: 0, y: 0},
 	};
 
-	const shape = new planck.BoxShape(0.5, 0.5);
+	const boxShape = new planck.BoxShape(0.5, 0.5);
 
 	for (let x = 0; x < maze.size.x; x++) {
-		for (let y = 0; y < maze.size.z; y++) {
-			if (maze.data[x][y] === false) {
-				bodyDefinition.position = {x, y};
+		for (let z = 0; z < maze.size.z; z++) {
+			if (maze.data[x][z] === false) {
+				bodyDefinition.position = {x, y: z};
 				const mazeBody = global.physicsWorld.createBody(bodyDefinition);
 				gMazePhysicsBodies.push(mazeBody);
-				mazeBody.createFixture({shape});
+				mazeBody.createFixture({shape: boxShape});
 			}
 		}
 	}
@@ -156,7 +168,6 @@ function create(maze) {
 }
 
 
-
 /**
  * @param {MazeObject} maze
  * @returns {THREE.InstancedMesh}
@@ -184,6 +195,59 @@ function mazeMesh(maze) {
 }
 
 
+/**
+ * Tell the maze where the player currently is (3D world X,Y,Z position)
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ */
+function updatePlayerPosition(x, y, z) {
+
+	gPlayerPos.x = x;
+	gPlayerPos.y = y;
+	gPlayerPos.z = z;
+
+	const gridX = Math.floor(x + 0.5);
+	const gridZ = Math.floor(z + 0.5);
+
+	const oldGridX = gPlayerGridInfo.x;
+	const oldGridZ = gPlayerGridInfo.z;
+
+	if (gridX === oldGridX && gridZ === oldGridZ) {
+		// grid square has not changed
+		return;
+	}
+
+	// @TODO: onSquareChange callbacks
+
+	const oldGridType = gPlayerGridInfo.type;
+
+	gPlayerGridInfo.x = gridX;
+	gPlayerGridInfo.z = gridZ;
+
+	if (gridX >= 0 && gridX < gCurrentMaze.size.x && gridZ >= 0 && gridZ < gCurrentMaze.size.z) {
+		gPlayerGridInfo.type = gCurrentMaze.data[gPlayerGridInfo.x][gPlayerGridInfo.z];
+	} else {
+		gPlayerGridInfo.type = 'O'; // outside maze
+	}
+
+	if (gPlayerGridInfo.type === oldGridType) {
+		return;
+	}
+
+	// @TODO: onTypeChange callbacks
+}
+
+
+/**
+ * Returns the details of the maze square the player is currently in
+ * @returns {{x:number,z:number,type:string}}
+ */
+function getPlayerGridInfo() {
+	return gPlayerGridInfo;
+}
+
+
 const _MODULE = 'maze.js';
 
 
@@ -192,4 +256,6 @@ export {
 	loadAssets,
 	setup,
 	create,
+	updatePlayerPosition,
+	getPlayerGridInfo,
 };
