@@ -6,17 +6,15 @@
   <title>Maze Array Viewer</title>
 
   <style>
-  table.maze td, table.key th { width: 30px; height: 30px; text-align: center; }
-  td, th.sq { background-color: #ddd; font-style: italic; }
-  td.wall,th.wall { background-color: #777; color: #ccc; font-size: 0.8em; }
-  th { border: 0; font-weight: normal; }
+  table.maze td, table.key th { text-align: center; }
+  .sq { background-color: #ddd; font-style: italic; width: 30px; height: 30px; font-weight: normal; }
+  td.wall,th.wall { background-color: #777; color: #ccc; font-size: 0.8em; width: 30px; height: 30px; }
   input, button { height: 2em; }
   input { width: 60px; }
   div { margin-bottom: 10px; }
   span.title { border: 2px inset grey; margin-left: 20px; padding: 6px; background-color: #EEE; }
-  table.key { border: 1px solid black; }
-  table.key td { background-color: #F0F0F0; }
-  table.key td.h { background-color: #606060; color: white; text-align: center; }
+  table.key, table.prop { border: 1px solid black; }
+  td.h, th.h { background-color: #606060; color: white; text-align: center; }
   </style>
  </head>
 
@@ -26,12 +24,13 @@
     <span id="controls"></span><span class="title">Visualize the MazeObject.data[x:&hArr;][z:&vArr;] array</span>
   </div>
   <div id="output"></div>
+  <div id="variables"></div>
 
   <script type="module">
 
 	import { generateMazeData } from '../src/mazegen';
 
-	const defaultLevel = 7;
+	const defaultLevel = 4;
 
 	const controls = document.getElementById('controls');
 	const levelInput = document.getElementById('level');
@@ -70,9 +69,9 @@
 				if (val === false) {
 					html += '<td class="wall">false</td>';
 				} else if (val === '.') {
-					html += '<td>&nbsp;</td>';
+					html += '<td class="sq">&nbsp;</td>';
 				} else {
-     				html += '<td>' + val + '</td>';
+     				html += '<td class="sq">' + val + '</td>';
      			}
 			}
 			html += '</tr>';
@@ -81,7 +80,57 @@
 		html += '</table>';
 
 		document.getElementById('output').innerHTML = html;
+
+		html = '<table class="prop"><tr><th colspan=2 class="h">Maze Object Properties</th></tr>';
+		html += showMazeObj(maze);
+		html += '</table>';
+
+		document.getElementById('variables').innerHTML = html;
 	}
+
+
+	function showMazeObj(o) {
+
+		let ret = '';
+
+		for (const property in o) {
+			if (property === 'data') {
+				ret += '<tr><th>data</th><td>[See main table above]</td></tr>';
+				continue;
+			}
+			if (property === 'deadends') {
+				ret += '<tr><th>deadends</th><td>[' + showDeadends(o[property]) + ']<td></tr>';
+				continue;
+			}
+			ret += '<tr><th>' + property + '</th><td>' + tostr(o[property]) + '</td></tr>';
+		}
+		return ret;
+	}
+
+	function showDeadends(arr) {
+		let ret = '';
+		arr.forEach((el) => { ret += tostr(el) + ', ' });
+		return ret;
+	}
+
+	function tostr(o) {
+
+		if (typeof o === 'number' || typeof o === 'string') {
+			return o;
+		}
+		if (typeof o === 'boolean') {
+			return o ? 'true' : 'false';
+		}
+
+		let out = '';
+		for (const property in o) {
+
+			out += (out === '' ? '' : ', ') +  property + ': ' + o[property];
+		}
+		return '{' + out + '}';
+	}
+
+
   </script>
   <table class="key">
 	<tr><td colspan=2 class="h">Key</th></tr>

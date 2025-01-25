@@ -18,21 +18,19 @@ function generateSolidMaze(level) {
 	/** @type {MazeObject} */
 	const maze = {
 		size: {x: sizeX, z: sizeZ},
-		start: {x: 0, z: 0, angle: 0},
-		exit: {x: 0, z: 0},
 		data: Array.from({length: sizeX}, () => Array(sizeZ).fill(false)),
+		deadends: [],
 	};
 
 	let pos = generateStartAndExit(maze.size);
 
 	maze.start = pos.start;
-	maze.exit = pos.exit;
+	maze.start.angle = 0;
 	maze.end = pos.end;
+	maze.exit = pos.exit;
 
 	// punch a hole in the outer wall for the player to exit through
 	maze.data[maze.exit.x][maze.exit.z] = 'H';
-
-	maze.start.angle = 0;
 
 	return maze;
 }
@@ -87,7 +85,6 @@ function generateRandomMaze(level) {
 	maze.data[maze.start.x][maze.start.z] = 'S';
 	maze.data[maze.end.x][maze.end.z] = 'E';
 	maze.start.angle = rot * HALF_PI;
-
 	return maze;
 }
 
@@ -134,11 +131,13 @@ function makePathFrom(maze, x, z) {
 		// either a dead end has been reached, or a previously available direction has
 		// been used since the last pass through this while loop
 		if (available.length == 0) {
-			// mark dead ends
-			if (maze.data[x][z] === false) {
-				maze.data[x][z] = 'D';
-			} else if (toExit) {
+			if (toExit) {
+				// this square leads to the exit so it cannot be a dead end
 				maze.data[x][z] = '*';
+			} else if (maze.data[x][z] === false) {
+				// this square was a wall, so we must have found a dead end
+				maze.data[x][z] = 'D';
+				maze.deadends.push({x, z});
 			}
 			// path has nowhere new to go, this iteration is done
 			return toExit;
@@ -193,8 +192,8 @@ function generateStartAndExit(size) {
 	let top = Math.random() > 0.5;
 	let left = Math.random() > 0.5;
 
-	start.z = top ? size.z - 2 : 1;
 	start.x = left ? 1 : size.x - 2;
+	start.z = top ? size.z - 2 : 1;
 
 	const r = Math.random();
 	if (r > 0.5) {
@@ -207,10 +206,10 @@ function generateStartAndExit(size) {
 		left = !left;
 	}
 
-	exit.z = top ? size.z - 2 : 1;
-	const dz = top ? 1 : -1;
 	exit.x = left ? 1 : size.x - 2;
 	const dx = left ? -1 : 1;
+	exit.z = top ? size.z - 2 : 1;
+	const dz = top ? 1 : -1;
 
 	const end = {...exit};
 
