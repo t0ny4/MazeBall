@@ -8,11 +8,20 @@ const config = {
 	ballRadius:			0.3,				// debug.js, objects/ball.js
 	bgColour:			0x100000,			// render.js, objects/maze.js
 	playerLightLevel:	0.9,				// player.js, render.js
-	textureDir:			'./textures/128',	// objects/ball.js, objects/maze.js
+	textureDir:			'./textures/128',	// objects/ball.js, objects/maze.js, objects/key.js
 
 
 	// main.js
 	randomSeed:			0,		// for debugging, falsy value = don't use a seed
+
+
+	// key.js
+	barrierHeight:		0.5,
+	barrierRadius:		0.15,
+	modelDir:			'./models',
+	barrierTextureFile:	'Roof13.png',
+	keyModelFile:		'Key.glb',
+	baseModelFile:		'TeleporterBase.glb',
 
 
 	// objects/ball.js

@@ -10,6 +10,8 @@
  *  end: {x: number, z: number},
  * 	exit: {x: number, z: number},
  * 	data: (boolean | number | string)[][],
+ *  key: false | {x: number, z: number},
+ *  deadends: [{x: number, z: number}],
  * }} MazeObject
  */
 

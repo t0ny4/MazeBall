@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import * as planck from 'planck';
 import global from '../global';
 import config from '../config';
+import * as key from './key';
 
 
 const HALF_PI = Math.PI / 2;
@@ -18,8 +19,6 @@ const gMazePhysicsBodies = [];
 
 const gPlayerPos = {x: 0, y: 0, z: 0};
 const gPlayerGridInfo = {x: 0, z: 0, type: ''};
-
-const gColourGreen = new THREE.Color(0x00ff00);
 
 /** @type {THREE.Scene} */
 let gScene
@@ -38,11 +37,9 @@ let gCurrentMaze;
 function setup() {
 	gScene = global.scene;
 	gCamera = global.camera;
-	gExitLight = new THREE.PointLight();
+	gExitLight = new THREE.PointLight(0x00ff00, 0);
 	gScene.add(gExitLight);
 	global.exitLight = gExitLight;
-	gExitLight.color = gColourGreen;
-	gExitLight.intensity = 0;
 	gCurrentMaze = {size: {x: 0, z: 0}};
 }
 
@@ -236,6 +233,11 @@ function updatePlayerPosition(x, y, z) {
 	}
 
 	// @TODO: onTypeChange callbacks
+
+	if (gPlayerGridInfo.type === 'K') {
+		key.collect();
+		gCurrentMaze.data[gPlayerGridInfo.x][gPlayerGridInfo.z] = 'D';
+	}
 }
 
 

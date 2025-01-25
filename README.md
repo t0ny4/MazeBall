@@ -16,6 +16,10 @@ A modern, partial re-implementation of Astray [[https://github.com/wwwtyro/Astra
 ## Textures
 - "Tiny Texture Pack 1" by Screaming Brain Studios: [[https://opengameart.org/content/tiny-texture-pack-1](https://opengameart.org/content/tiny-texture-pack-1)]. [[License CC0](https://creativecommons.org/publicdomain/zero/1.0/)]
 
+## Models
+- Key by Quaternius [[https://poly.pizza/m/bg6e1lfNsO](https://poly.pizza/m/bg6e1lfNsO)]
+- Teleporter base by Quaternius  [[https://poly.pizza/m/OIezStCmak](https://poly.pizza/m/OIezStCmak)]
+
 ---
 
 ## Default Controls

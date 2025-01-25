@@ -9,6 +9,7 @@ import { bindControlKeys } from './src/controls';
 import * as physics from './src/physics';
 import * as render from './src/render';
 import * as maze from './src/objects/maze';
+import * as key from './src/objects/key';
 import * as player from './src/player';
 import * as debug from './src/debug';
 import * as firstPerson from './src/first_person';
@@ -31,7 +32,7 @@ let gGameState = GameStates.init;
 
 document.addEventListener("DOMContentLoaded", () => {
 	loadAssets(
-		[player, maze],
+		[player, maze, key],
 		setup
 	);
 });
@@ -79,6 +80,7 @@ function setup() {
 	maze.setup();
 	// the rest of the setup functions come next in any order
 	player.setup(maze.updatePlayerPosition);
+	key.setup();
 	bindControlKeys();
 	debug.setup();
 	firstPerson.setup();
@@ -97,6 +99,7 @@ function game_loop() {
 		case GameStates.init: {
 			const mazeData = generateMazeData(gLevel);
 			maze.create(mazeData);
+			key.create(mazeData);
 			player.setNewMaze(mazeData);
 			debug.reset();
 			gGameState = GameStates.fadeIn;

@@ -20,6 +20,7 @@ function generateSolidMaze(level) {
 		size: {x: sizeX, z: sizeZ},
 		data: Array.from({length: sizeX}, () => Array(sizeZ).fill(false)),
 		deadends: [],
+		key: false,
 	};
 
 	let pos = generateStartAndExit(maze.size);
@@ -85,6 +86,14 @@ function generateRandomMaze(level) {
 	maze.data[maze.start.x][maze.start.z] = 'S';
 	maze.data[maze.end.x][maze.end.z] = 'E';
 	maze.start.angle = rot * HALF_PI;
+
+	// if there are any deadends in the maze, pick a random one and put a key in it
+	if (maze.deadends.length > 0) {
+		const rnd = Math.floor(Math.random() * maze.deadends.length);
+		maze.key = maze.deadends[rnd];
+		maze.data[maze.key.x][maze.key.z] = 'K';
+	}
+
 	return maze;
 }
 
