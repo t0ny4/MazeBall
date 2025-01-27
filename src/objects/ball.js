@@ -21,25 +21,23 @@ let gBallTexture;
 let gUpdateMazePosition = () => {console.warn('gUpdateMazePosition not set');};
 
 
-/** @returns {Promise<boolean>} */
-function loadAssets() {
+/**
+ * @param {THREE.LoadingManager} manager
+ */
+function loadAssets(manager) {
 
-	return new Promise((resolve, reject) => {
+	const textureLoader = new THREE.TextureLoader(manager);
 
-		const textureLoader = new THREE.TextureLoader();
-
-		textureLoader.load(config.textureDir + '/ball/' + config.ballTextureFile,
-			(tex) => {
-				gBallTexture = tex;
-				gBallTexture.colorSpace = THREE.SRGBColorSpace;
-				resolve(true);
-			},
-			null,
-			(err) => {
-				reject('failed to load texture ' + err.target.src);
-			}
-		);
-	});
+	textureLoader.load(config.textureDir + 'ball/' + config.ballTextureFile,
+		(texture) => {
+			gBallTexture = texture;
+			gBallTexture.colorSpace = THREE.SRGBColorSpace;
+		},
+		undefined,
+		() => {
+			gBallTexture = global.errorTexture;
+		}
+	);
 }
 
 

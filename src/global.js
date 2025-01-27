@@ -32,6 +32,8 @@ const global = {
 	renderUpdate: () => {},
 	/** @type {THREE.Scene} */
 	scene: null,
+	errorTexture: null,
+	errorMesh: null,
 };
 
 

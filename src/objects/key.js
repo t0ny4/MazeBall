@@ -52,25 +52,32 @@ function setup() {
 }
 
 
-/** @returns {Promise<Boolean>} */
-function loadAssets() {
+/**
+ * @param {THREE.LoadingManager} manager
+ */
+function loadAssets(manager) {
 
-	return new Promise((resolve, reject) => {
+	const textureLoader = new THREE.TextureLoader(manager);
+	const modelLoader = new GLTFLoader(manager);
 
-		const manager = new THREE.LoadingManager();
-		manager.onLoad = () => {
-			resolve(true);
-		};
-		manager.onError = (name) => {
-			reject('failed to load asset: ' + name);
-		};
+	textureLoader.load(
+		config.textureDir + 'misc/' + config.barrierTextureFile,
+		(texture) => {
+			gBarrierTexture = texture;
+			gBarrierTexture.colorSpace = THREE.SRGBColorSpace;
+			gBarrierTexture.wrapS = gBarrierTexture.wrapT = THREE.RepeatWrapping;
+		},
+		undefined,
+		() => {
+			gBarrierTexture = global.errorTexture;
+		}
+	);
 
-		const modelLoader = new GLTFLoader(manager);
-		modelLoader.setPath(config.modelDir + '/');
-
-		modelLoader.load(config.keyModelFile, (gltf) => {
+	modelLoader.load(
+		config.modelDir + config.keyModelFile,
+		(gltf) => {
 			gKeyMesh = gltf.scene;
-			gKeyMesh.traverse(child => {
+			gKeyMesh.traverse((child) => {
 				if (child instanceof THREE.Mesh) {
 					child.material.emissive = {b: 0, r: 1, g: 0.7, isColor: true};
 					child.material.emissiveIntensity = 0.55;
@@ -79,18 +86,24 @@ function loadAssets() {
 			gKeyMesh.scale.set(0.6, 0.6, 0.6);
 			gKeyMesh.rotateZ(-0.4);
 			gKeyMesh.rotateY(0.5);
-		});
+		},
+		undefined,
+		() => {
+			gKeyMesh = global.errorMesh.clone();
+		}
+	);
 
-		modelLoader.load(config.baseModelFile, (gltf) => {
+	modelLoader.load(
+		config.modelDir + config.baseModelFile,
+		(gltf) => {
 			gKeyBaseMesh = gltf.scene;
 			gKeyBaseMesh.scale.set(0.35, 0.1, 0.35);
-		});
-
-		const textureLoader = new THREE.TextureLoader(manager);
-		gBarrierTexture = textureLoader.load(config.textureDir + '/misc/' + config.barrierTextureFile);
-		gBarrierTexture.colorSpace = THREE.SRGBColorSpace;
-		gBarrierTexture.wrapS = gBarrierTexture.wrapT = THREE.RepeatWrapping;
-	});
+		},
+		undefined,
+		() => {
+			gKeyBaseMesh = global.errorMesh.clone();
+		}
+	);
 }
 
 

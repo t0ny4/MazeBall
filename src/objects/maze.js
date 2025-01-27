@@ -44,33 +44,39 @@ function setup() {
 }
 
 
-/** @returns {Promise<Boolean>} */
-function loadAssets() {
+/**
+ * @param {THREE.LoadingManager} manager
+ */
+function loadAssets(manager) {
 
-	return new Promise((resolve, reject) => {
+	const textureLoader = new THREE.TextureLoader(manager);
 
-		const manager = new THREE.LoadingManager();
-		manager.onLoad = () => {
-			resolve(true);
-		};
-		manager.onError = (name) => {
-			reject('failed to load texture ' + name);
-		};
+	for (const file of config.wallTextureFiles) {
+		textureLoader.load(config.textureDir + 'walls/' + file,
+			(texture) => {
+				texture.colorSpace = THREE.SRGBColorSpace;
+				gWallTextures.push(texture);
+			},
+			undefined,
+			() => {
+				gWallTextures.push(global.errorTexture);
+			}
+		);
 
-		const textureLoader = new THREE.TextureLoader(manager);
+	}
 
-		for (const file of config.wallTextureFiles) {
-			const texture = textureLoader.load(config.textureDir + '/walls/' + file);
-			texture.colorSpace = THREE.SRGBColorSpace;
-			gWallTextures.push(texture);
-		}
-
-		for (const file of config.floorTextureFiles) {
-			const texture = textureLoader.load(config.textureDir + '/floors/' + file);
-			texture.colorSpace = THREE.SRGBColorSpace;
-			gFloorTextures.push(texture);
-		}
-	});
+	for (const file of config.floorTextureFiles) {
+		textureLoader.load(config.textureDir + 'floors/' + file,
+			(texture) => {
+				texture.colorSpace = THREE.SRGBColorSpace;
+				gFloorTextures.push(texture);
+			},
+			undefined,
+			() => {
+				gFloorTextures.push(global.errorTexture);
+			}
+		);
+	}
 }
 
 

@@ -27,8 +27,11 @@ const SIN45 = Math.sin(QUARTER_PI);
 const COS45 = Math.cos(QUARTER_PI);
 
 
-function loadAssets() {
-	return actor.loadAssets();
+/**
+ * @param {THREE.LoadingManager} manager
+ */
+function loadAssets(manager) {
+	actor.loadAssets(manager);
 }
 
 /**

@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: 0BSD */
 
 import './src/types';
+import * as THREE from 'three';
 import aleaPRNG from './src/aleaPRNG';
 import global from './src/global';
 import config from './src/config';
@@ -17,6 +18,10 @@ import * as firstPerson from './src/first_person';
 
 // override javascript builtin prng with alea, using seed if configured
 Math.random = !config.randomSeed ? aleaPRNG() : aleaPRNG(config.randomSeed);
+
+// fallback assets in case of loading errors
+global.errorTexture = makeErrorTexture();
+global.errorMesh = makeErrorMesh();
 
 const GameStates = Object.freeze({
 	init: 0,
@@ -40,35 +45,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /**
  * Calls the supplied function when all game assets are loaded
- * @param {Object[]} objs array of Objects with a loadAssets() method that returns a promise
+ * @param {Object[]} objs array of Objects with a loadAssets() method
  * @param {Function} callback called when all asset loading is finished
  */
-async function loadAssets(objs, callback) {
-	/** @type {Promise[]} */
-	const promises = [];
-	// set all the objects loading
+function loadAssets(objs, callback) {
+
+	let initDone = false;
+	let hadErrors = false;
+
+	const manager = new THREE.LoadingManager();
+
+	manager.onError = (name) => {
+		console.warn('Failed to load asset:', name);
+		hadErrors = true;
+	};
+
+	//manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+	//	console.log('Loading asset file: ' + url + ' [' + itemsLoaded + ' of ' + itemsTotal + ']');
+	//};
+
+	manager.onLoad = () => {
+		if (!initDone) {
+			return;
+		}
+		if (hadErrors) {
+			console.error('LoadingManager: finished loading asset files with errors');
+		}
+		callback();
+	};
+
 	objs.forEach(obj => {
 		if (typeof obj.loadAssets == 'function') {
-			const ret = obj.loadAssets();
-			if (ret instanceof Promise) {
-				promises.push(ret);
-			} else {
-				console.warn(obj, 'loadAssets() did not return a promise, it returned', ret);
-			}
+			obj.loadAssets(manager);
 		} else {
 			console.warn(obj, 'has no loadAssets method');
 		}
 	});
-	// now wait for them all to finish
-	for (let i = 0; i < promises.length; i++) {
-		try {
-			await promises[i];
-		} catch (e) {
-			console.warn('loadAssets():', e);
-		}
-	}
-	// all the loadAsset promises have returned
-	callback();
+
+	initDone = true;
 }
 
 
@@ -160,4 +174,36 @@ function game_loop() {
 	render.update(renderRequired);
 
 	requestAnimationFrame(game_loop);
+}
+
+
+/**
+ * @returns {THREE.Texture}
+ */
+function makeErrorTexture() {
+
+	const side = 16;
+	const size = side * side * 4;
+	const data = new Uint8Array(size);
+
+	for (let i = 0; i < size; i += 4) {
+		data[i]     = 0xff;
+		data[i + 1] = 0x69;
+		data[i + 2] = 0xb4;
+		data[i + 3] = 0xff;
+	}
+
+	const texture = new THREE.DataTexture(data, side, side);
+	texture.needsUpdate = true;
+	return texture;
+}
+
+
+/**
+ * @returns {THREE.Mesh}
+ */
+function makeErrorMesh() {
+	const errorGeometry = new THREE.SphereGeometry(0.1);
+	const errorMaterial = new THREE.MeshBasicMaterial({color: 0xff69b4});
+	return new THREE.Mesh(errorGeometry, errorMaterial);
 }
