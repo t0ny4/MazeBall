@@ -58,6 +58,8 @@ function setup(el = document.body) {
  */
 function update(doUpdate = true) {
 
+	let cameraMoving = false;
+
 	// we only control the camera if orbit controls is not enabled
 	if (!global.orbitControlsEnabled) {
 
@@ -73,9 +75,9 @@ function update(doUpdate = true) {
 			const xDiff = playerPos.x - global.camera.position.x;
 			const zDiff = playerPos.z - global.camera.position.z;
 
-			if (xDiff != 0 || zDiff != 0 ) {
+			if (xDiff !== 0 || zDiff !== 0 ) {
 				// camera is still moving, need to do a renderer update
-				doUpdate = true;
+				cameraMoving = true;
 
 				const cameraEase = global.mazeExited ? config.cameraExitEase : config.cameraEase;
 
@@ -93,7 +95,7 @@ function update(doUpdate = true) {
 		}
 	}
 
-	if (doUpdate) {
+	if (doUpdate || cameraMoving) {
 		//console.log('render.update() calling global.renderer.render()');
 		global.renderer.render(global.scene, global.camera);
 	}

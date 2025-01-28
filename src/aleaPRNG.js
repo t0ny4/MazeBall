@@ -1,12 +1,18 @@
-// Alea by Johannes Baagøe (2010) which is based on
-// MWC (Multiply-with-Carry) by George Marsaglia and Arif Zaman (1991)
+/* SPDX-License-Identifier: BSD-3-Clause */
 
-export default function aleaPRNG() {
+/*
+	Alea by Johannes Baagøe (2010) which is based on
+	MWC (Multiply-with-Carry) by George Marsaglia and Arif Zaman (1991)
+	Original work copyright © 2010 Johannes Baagøe, under MIT license
+	This version is just a "re-packaging" of v1.1, a derivative work copyright
+	(c) 2017-2020, W. Mac" McMeans, under BSD 3-Clause License. https://github.com/macmcmeans/aleaPRNG
+*/
+
+
+export default function aleaPRNG(...args) {
 
 	// internal state variables
 	let s0, s1, s2, c;
-
-	let args = Array.prototype.slice.call(arguments);
 
 	// if no seed args were supplied, generate random ones
 	if (args.length === 0) {
@@ -17,14 +23,13 @@ export default function aleaPRNG() {
 
 	initState(args);
 
-
 	/**
 	 * @param {Array} seed
 	 * @private
 	 */
 	function initState(seed) {
 
-		const mash = Mash();
+		const mash = createMash();
 
 		s0 = mash(' ');
 		s1 = mash(' ');
@@ -52,11 +57,11 @@ export default function aleaPRNG() {
 	 * @returns {Function}
 	 * @private
 	 */
-	function Mash() {
+	function createMash() {
 		// x >>> 0 is a faster version of Math.abs(x)
 		let n = 4022871197; // 0xefc8249d
 
-		var mash = function(data) {
+		function mash(data) {
 
 			data = data.toString();
 
@@ -65,7 +70,7 @@ export default function aleaPRNG() {
 			for (let i = 0; i < l; i++) {
 				n += data.charCodeAt(i);
 
-				var h = 0.02519603282416938 * n;
+				let h = 0.02519603282416938 * n;
 
 				n  = h >>> 0;
 				h -= n;
@@ -98,14 +103,15 @@ export default function aleaPRNG() {
 	 * @returns {Number} a 32-bit fraction in the range [0, 1]
 	 * @public
 	 */
-	const random = function () {
+	function random() {
 
 		const t = 2091639 * s0 + c * 2.3283064365386963e-10; // 2^-32
 
 		s0 = s1;
 		s1 = s2;
+		s2 = t - (c = t | 0);
 
-		return s2 = t - (c = t | 0);
+		return s2;
 	};
 
 
@@ -132,7 +138,7 @@ export default function aleaPRNG() {
 	 * @public
 	 */
 	random.cycle = function (count) {
-		count = typeof count === 'undefined' ? 1 : +count; // + ??
+		count = typeof count === 'undefined' ? 1 : Number(count);
 		if (count < 1) { count = 1; }
 		for (let i = 0; i < count; i++) { random(); }
 	};
@@ -177,8 +183,8 @@ export default function aleaPRNG() {
 	 * seeding function
 	 * @public
 	 */
-	random.seed = function () {
-		initState(Array.prototype.slice.call(arguments));
+	random.seed = function (...seed) {
+		initState(seed);
 	};
 
 

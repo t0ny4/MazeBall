@@ -60,12 +60,12 @@ function setup(updatePositionFunc) {
 function update() {
 
 	// if either movement key is pressed, apply the relevant force
-	if (keyX != 0 || keyY != 0) {
+	if (keyX !== 0 || keyY !== 0) {
 
 		let keyForce;
 
 		// if both keys are pressed, apply a 45 degree force
-		if (keyX != 0 && keyY != 0) {
+		if (keyX !== 0 && keyY !== 0) {
 			keyForce = new planck.Vec2(keyX * COS45, keyY * SIN45);
 		} else {
 			keyForce = new planck.Vec2(keyX, keyY);

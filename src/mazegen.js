@@ -23,7 +23,7 @@ function generateSolidMaze(level) {
 		key: false,
 	};
 
-	let pos = generateStartAndExit(maze.size);
+	const pos = generateStartAndExit(maze.size);
 
 	maze.start = pos.start;
 	maze.start.angle = 0;
@@ -70,8 +70,7 @@ function generateRandomMaze(level) {
 	// calculate the angle the 1st person mode player needs to face
 	// so they aren't staring straight at a wall
 
-	const x = maze.start.x;
-	const z = maze.start.z;
+	const {x, z} = maze.start;
 
 	let rot = 0; // default to up
 
@@ -139,7 +138,7 @@ function makePathFrom(maze, x, z) {
 
 		// either a dead end has been reached, or a previously available direction has
 		// been used since the last pass through this while loop
-		if (available.length == 0) {
+		if (available.length === 0) {
 			if (toExit) {
 				// this square leads to the exit so it cannot be a dead end
 				maze.data[x][z] = '*';
@@ -156,9 +155,9 @@ function makePathFrom(maze, x, z) {
 		// must do this here because of the dead end check in the code above
 		maze.data[x][z] = '.';
 
-		if (available.length == 1) {
+		if (available.length === 1) {
 			// this is the only available direction
-			dir = available[0];
+			[dir] = available;
 		} else {
 			// pick one of the available directions at random
 			dir = available[Math.floor(Math.random() * available.length)];
@@ -177,7 +176,7 @@ function makePathFrom(maze, x, z) {
 
 		// if there was only one direction available previously, there can't be any
 		// directions left now. this iteration is done.
-		if (available.length == 1) {
+		if (available.length === 1) {
 			if (toExit) {
 				maze.data[x][z] = '*';
 			}

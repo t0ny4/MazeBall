@@ -29,7 +29,7 @@ const global = {
 	 * calls render.update()
 	 * @type {Function}
 	 */
-	renderUpdate: () => {},
+	renderUpdate: () => { console.warn('global.renderUpdate not set'); },
 	/** @type {THREE.Scene} */
 	scene: null,
 	errorTexture: null,

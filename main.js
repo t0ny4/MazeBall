@@ -75,7 +75,7 @@ function loadAssets(objs, callback) {
 	};
 
 	objs.forEach(obj => {
-		if (typeof obj.loadAssets == 'function') {
+		if (typeof obj.loadAssets === 'function') {
 			obj.loadAssets(manager);
 		} else {
 			console.warn(obj, 'has no loadAssets method');
