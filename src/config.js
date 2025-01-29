@@ -56,6 +56,7 @@ const config = {
 
 
 	// player.js
+	idleTimeout:		15,	// seconds
 	keyForce:			0.4,
 	lightYpos:			1.4,
 

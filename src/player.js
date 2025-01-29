@@ -90,7 +90,22 @@ function update() {
 	global.playerLight.position.x = gPlayer3DObject.position.x;
 	global.playerLight.position.z = gPlayer3DObject.position.z;
 
-	return actor.update();
+	const actorMoving = actor.update();
+
+	if (actorMoving) {
+		global.idleStartMs = 0;
+		global.idleMode = false;
+	}
+
+	if (!actorMoving && !global.idleMode) {
+		if (global.idleStartMs === 0) {
+			global.idleStartMs = Date.now();
+		} else if (Date.now() - global.idleStartMs > config.idleTimeout * 1000) {
+			global.idleMode = true;
+		}
+	}
+
+	return actorMoving;
 }
 
 

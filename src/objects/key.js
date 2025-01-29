@@ -186,7 +186,7 @@ function create(maze) {
 
 function update() {
 
-	if (!gWasSetupCalled || !gKeyVisible) {
+	if (!gWasSetupCalled || !gKeyVisible || global.idleMode) {
 		return false;
 	}
 
