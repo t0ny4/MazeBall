@@ -16,12 +16,10 @@ const config = {
 
 
 	// key.js
-	barrierHeight:		0.5,
-	barrierRadius:		0.15,
 	modelDir:			'./models/',
-	barrierTextureFile:	'Roof13.png',
 	keyModelFile:		'Key.glb',
 	baseModelFile:		'TeleporterBase.glb',
+	doorModelFile:		'ArchDoor.glb',
 
 
 	// objects/ball.js

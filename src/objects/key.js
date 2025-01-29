@@ -7,8 +7,8 @@ import * as planck from 'planck';
 import global from '../global';
 import config from '../config';
 
+const HALF_PI = Math.PI / 2;
 
-const gBarrierGeometry = new THREE.CapsuleGeometry(config.barrierRadius, config.barrierHeight);
 const gColourRed = new THREE.Color(0xff0000);
 const gColourGreen = new THREE.Color(0x00ff00);
 
@@ -17,12 +17,6 @@ let gScene;
 /** @type {THREE.PointLight} */
 let gExitLight;
 
-/** @type {planck.Body} */
-let gBarrierBody = null;
-/** @type {THREE.Mesh} */
-let gBarrierMesh;
-/** @type {THREE.Texture} */
-let gBarrierTexture;
 /** @type {THREE.Mesh} */
 let gKeyMesh;
 /** @type {THREE.PointLight} */
@@ -31,6 +25,16 @@ let gKeyLight;
 let gKeyBaseMesh;
 /** @type {THREE.PointLight} */
 let gKeyBaseLight;
+/** @type {THREE.Mesh} */
+let gDoorMesh;
+/** @type {planck.Body} */
+let gDoorBody = null;
+/** @type {planck.BoxShape} */
+let gDoorShapeHoriz;
+/** @type {planck.BoxShape} */
+let gDoorShapeVert;
+/** @type {MazeObject} */
+let gCurrentMaze;
 /** @type {Boolean} */
 let gWasSetupCalled = false;
 
@@ -45,8 +49,8 @@ function setup() {
 	gKeyLight = new THREE.PointLight(0xffd700, 0);
 	gScene.add(gKeyLight);
 
-	const material = new THREE.MeshBasicMaterial({map: gBarrierTexture});
-	gBarrierMesh = new THREE.Mesh(gBarrierGeometry, material);
+	gDoorShapeHoriz = new planck.BoxShape(0.5, 0.04);
+	gDoorShapeVert = new planck.BoxShape(0.04, 0.5);
 
 	gWasSetupCalled = true;
 }
@@ -57,21 +61,7 @@ function setup() {
  */
 function loadAssets(manager) {
 
-	const textureLoader = new THREE.TextureLoader(manager);
 	const modelLoader = new GLTFLoader(manager);
-
-	textureLoader.load(
-		config.textureDir + 'misc/' + config.barrierTextureFile,
-		(texture) => {
-			gBarrierTexture = texture;
-			gBarrierTexture.colorSpace = THREE.SRGBColorSpace;
-			gBarrierTexture.wrapS = gBarrierTexture.wrapT = THREE.RepeatWrapping;
-		},
-		undefined,
-		() => {
-			gBarrierTexture = global.errorTexture;
-		}
-	);
 
 	modelLoader.load(
 		config.modelDir + config.keyModelFile,
@@ -104,6 +94,18 @@ function loadAssets(manager) {
 			gKeyBaseMesh = global.errorMesh.clone();
 		}
 	);
+
+	modelLoader.load(
+		config.modelDir + config.doorModelFile,
+		(gltf) => {
+			gDoorMesh = gltf.scene;
+			gDoorMesh.scale.set(0.42, 0.4, 0.3);
+		},
+		undefined,
+		() => {
+			gDoorMesh = global.errorMesh.clone();
+		}
+	);
 }
 
 
@@ -118,13 +120,18 @@ function create(maze) {
 		return;
 	}
 
-	if (gBarrierBody !== null) {
-		global.physicsWorld.destroyBody(gBarrierBody);
-		gBarrierBody = null;
+	gCurrentMaze = maze;
+
+	// remove old door physics body if it exists
+	if (gDoorBody !== null) {
+		global.physicsWorld.destroyBody(gDoorBody);
+		gDoorBody = null;
 	}
 
 	gScene.remove(gKeyMesh);
 	gScene.remove(gKeyBaseMesh);
+	gScene.remove(gDoorMesh);
+
 	gKeyBaseLight.intensity = 0;
 	gKeyLight.intensity = 0;
 
@@ -132,16 +139,28 @@ function create(maze) {
 		return;
 	}
 
+	// door position calculations
+	let doorX = maze.exit.x;
+	let doorZ = maze.exit.z;
+	let doorShape;
+	if (maze.exit.dir === 'L' || maze.exit.dir === 'R') {
+		gDoorMesh.rotation.set(0, HALF_PI, 0);
+		doorX += (maze.exit.dir === 'R') ? 0.5 : -0.5;
+		doorShape = gDoorShapeVert;
+	} else {
+		gDoorMesh.rotation.set(0, 0, 0);
+		doorZ += (maze.exit.dir === 'D') ? 0.5 : -0.5;
+		doorShape = gDoorShapeHoriz;
+	}
+
 	// --- PHYSICS ---
 
-	const pinShape = new planck.CircleShape(config.barrierRadius);
-	const bodyDefinition = {
+	const doorDefinition = {
 		type: 'static',
-		position: {x: maze.exit.x, y: maze.exit.z},
+		position: {x: doorX, y: doorZ}
 	};
-	const mazeBody = global.physicsWorld.createBody(bodyDefinition);
-	gBarrierBody = mazeBody;
-	mazeBody.createFixture({shape: pinShape});
+	gDoorBody = global.physicsWorld.createBody(doorDefinition);
+	gDoorBody.createFixture({shape: doorShape});
 
 	// --- 3D ---
 
@@ -155,23 +174,57 @@ function create(maze) {
 	gKeyLight.position.set(maze.key.x, 0.3, maze.key.z);
 	gKeyLight.intensity = 0.1;
 
-	gBarrierMesh.position.set(maze.exit.x, config.barrierHeight / 2, maze.exit.z);
-	gScene.add(gBarrierMesh);
+	gDoorMesh.position.set(doorX, 0, doorZ);
+	gScene.add(gDoorMesh);
+
 	gExitLight.color = gColourRed;
 }
 
 
 /**
- * 'collect' the key. removes the key from the maze and clears the exit barrier
+ * 'collect' the key. removes the key from the maze and opens the exit door
  */
 function collect() {
+	// remove key
 	gScene.remove(gKeyMesh);
 	gKeyLight.intensity = 0;
-	if (gBarrierBody !== null) {
-		global.physicsWorld.destroyBody(gBarrierBody);
+
+	// remove closed door physics body
+	if (gDoorBody !== null) {
+		global.physicsWorld.destroyBody(gDoorBody);
+		gDoorBody = null;
 	}
+
+	// new door position calculations
+	const exitDir = gCurrentMaze.exit.dir;
+	let doorX = gDoorMesh.position.x;
+	let doorZ = gDoorMesh.position.z;
+	let doorShape;
+	let rotateY = 0;
+	if (exitDir === 'L' || exitDir === 'R') {
+		doorX += (exitDir=== 'R') ? 0.5 : -0.5;
+		doorZ += 0.5;
+		doorShape = gDoorShapeHoriz;
+	} else {
+		rotateY = HALF_PI;
+		doorX += 0.5;
+		doorZ += (exitDir=== 'D') ? 0.5 : -0.5;
+		doorShape = gDoorShapeVert;
+	}
+
+	// create open door physics body
+	const doorDefinition = {
+		type: 'static',
+		position: {x: doorX, y: doorZ}
+	};
+	gDoorBody = global.physicsWorld.createBody(doorDefinition);
+	gDoorBody.createFixture({shape: doorShape});
+
+	// move door mesh to open position
+	gDoorMesh.position.set(doorX, 0, doorZ);
+	gDoorMesh.rotation.set(0, rotateY, 0);
+
 	gExitLight.color = gColourGreen;
-	gScene.remove(gBarrierMesh);
 }
 
 

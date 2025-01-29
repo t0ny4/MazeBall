@@ -201,7 +201,7 @@ function generateStartAndExit(size) {
 	let left = Math.random() > 0.5;
 
 	start.x = left ? 1 : size.x - 2;
-	start.z = top ? size.z - 2 : 1;
+	start.z = top ?  1 : size.z - 2;
 
 	const r = Math.random();
 	if (r > 0.5) {
@@ -216,16 +216,19 @@ function generateStartAndExit(size) {
 
 	exit.x = left ? 1 : size.x - 2;
 	const dx = left ? -1 : 1;
-	exit.z = top ? size.z - 2 : 1;
-	const dz = top ? 1 : -1;
+	exit.z = top ?  1 : size.z - 2;
+	const dz = top ? -1 : 1;
 
 	const end = {...exit};
 
-	// exit vertical or horizontal
 	if (Math.random() > 0.5) {
+		// vertical exit
 		exit.z += dz;
+		exit.dir = top ? 'U' : 'D';
 	} else {
+		// horizontal exit
 		exit.x += dx;
+		exit.dir = left ? 'L' : 'R';
 	}
 
 	return {start, end, exit};
