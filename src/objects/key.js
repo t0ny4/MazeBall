@@ -37,6 +37,8 @@ let gDoorShapeVert;
 let gCurrentMaze;
 /** @type {Boolean} */
 let gWasSetupCalled = false;
+/** @type {Boolean} */
+let gKeyVisible = false;
 
 
 function setup() {
@@ -74,8 +76,6 @@ function loadAssets(manager) {
 				}
 			});
 			gKeyMesh.scale.set(0.6, 0.6, 0.6);
-			gKeyMesh.rotateZ(-0.4);
-			gKeyMesh.rotateY(0.5);
 		},
 		undefined,
 		() => {
@@ -135,6 +135,8 @@ function create(maze) {
 	gKeyBaseLight.intensity = 0;
 	gKeyLight.intensity = 0;
 
+	gKeyVisible = false;
+
 	if (maze.key === false) {
 		return;
 	}
@@ -169,15 +171,28 @@ function create(maze) {
 	gKeyBaseLight.position.set(maze.key.x, 0.1, maze.key.z);
 	gKeyBaseLight.intensity = 0.04;
 
-	gKeyMesh.position.set(maze.key.x, 0.3, maze.key.z);
+	gKeyMesh.position.set(maze.key.x, 0.38, maze.key.z);
 	gScene.add(gKeyMesh);
-	gKeyLight.position.set(maze.key.x, 0.3, maze.key.z);
+	gKeyLight.position.set(maze.key.x, 0.44, maze.key.z);
 	gKeyLight.intensity = 0.1;
+	gKeyVisible = true;
 
 	gDoorMesh.position.set(doorX, 0, doorZ);
 	gScene.add(gDoorMesh);
 
 	gExitLight.color = gColourRed;
+}
+
+
+function update() {
+
+	if (!gWasSetupCalled || !gKeyVisible) {
+		return false;
+	}
+
+	gKeyMesh.rotateY(0.03);
+	gKeyMesh.rotateZ(0.03);
+	return true;
 }
 
 
@@ -188,6 +203,7 @@ function collect() {
 	// remove key
 	gScene.remove(gKeyMesh);
 	gKeyLight.intensity = 0;
+	gKeyVisible = false;
 
 	// remove closed door physics body
 	if (gDoorBody !== null) {
@@ -236,5 +252,6 @@ export {
 	setup,
 	loadAssets,
 	create,
+	update,
 	collect,
 };
