@@ -32,7 +32,9 @@ const global = {
 	renderUpdate: () => { console.warn('global.renderUpdate not set'); },
 	/** @type {THREE.Scene} */
 	scene: null,
+	/** @type {THREE.Texture} */
 	errorTexture: null,
+	/** @type {THREE.Mesh} */
 	errorMesh: null,
 };
 
