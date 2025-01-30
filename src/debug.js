@@ -1,6 +1,7 @@
 /* SPDX-License-Identifier: 0BSD */
 
 import * as THREE from 'three';
+import Stats from 'three/addons/libs/stats.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls';
 import { setKeyHandler } from "./controls";
 import global from './global';
@@ -11,9 +12,13 @@ import * as player from './player';
 let gHouseLightsActive = false;
 let gControls, gHouseLights;
 let gCameraYpos;
+let gStats;
 
 
 function setup() {
+
+	gStats = new Stats()
+	document.body.appendChild(gStats.dom);
 
 	setKeyHandler('orbit_controls', keyHandlerControls);
 	setKeyHandler('house_lights', keyHandlerLight);
@@ -35,6 +40,7 @@ function setup() {
  * @returns {boolean} true if debug needs a render update
  */
 function update() {
+	gStats.update();
 	if (global.orbitControlsEnabled) {
 		gControls.update();
 		return true;
