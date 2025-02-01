@@ -35,7 +35,7 @@ let gDoorBody = null;
 let gDoorShapeHoriz;
 /** @type {planck.BoxShape} */
 let gDoorShapeVert;
-/** @type {MazeObject} */
+/** @type {MazeWithKey} */
 let gCurrentMaze;
 /** @type {Boolean} */
 let gWasSetupCalled = false;
@@ -125,8 +125,6 @@ function create(maze) {
 		return;
 	}
 
-	gCurrentMaze = maze;
-
 	// remove old door physics body if it exists
 	if (gDoorBody !== null) {
 		global.physicsWorld.destroyBody(gDoorBody);
@@ -142,25 +140,38 @@ function create(maze) {
 
 	gKeyVisible = false;
 
-	if (maze.key === false) {
+	/** @type {MazeWithKey} kMaze */
+	const kMaze = maze;
+
+	gCurrentMaze = kMaze;
+
+	if (kMaze.deadends.length === 0) {
+		kMaze.key = false;
+		kMaze.keyIndex = false;
 		return;
 	}
 
+	// pick a random deadend and put the key in it
+	const rnd = Math.floor(Math.random() * kMaze.deadends.length);
+	kMaze.key = kMaze.deadends[rnd];
+	kMaze.keyIndex = rnd;
+	kMaze.data[kMaze.key.x][kMaze.key.z] = 'K';
+
 	// the exit is blocked by a door, so mark it as such (L = locked)
-	const {x, z} = gCurrentMaze.exit;
-	gCurrentMaze.data[x][z] = 'L';
+	const {x, z} = kMaze.exit;
+	kMaze.data[x][z] = 'L';
 
 	// door position calculations
-	let doorX = maze.exit.x;
-	let doorZ = maze.exit.z;
+	let doorX = kMaze.exit.x;
+	let doorZ = kMaze.exit.z;
 	let doorShape;
-	if (maze.exit.dir === 'L' || maze.exit.dir === 'R') {
+	if (kMaze.exit.dir === 'L' || kMaze.exit.dir === 'R') {
 		gDoorMesh.rotation.set(0, HALF_PI, 0);
-		doorX += (maze.exit.dir === 'R') ? 0.5 : -0.5;
+		doorX += (kMaze.exit.dir === 'R') ? 0.5 : -0.5;
 		doorShape = gDoorShapeVert;
 	} else {
 		gDoorMesh.rotation.set(0, 0, 0);
-		doorZ += (maze.exit.dir === 'D') ? 0.5 : -0.5;
+		doorZ += (kMaze.exit.dir === 'D') ? 0.5 : -0.5;
 		doorShape = gDoorShapeHoriz;
 	}
 
@@ -175,14 +186,14 @@ function create(maze) {
 
 	// --- 3D ---
 
-	gKeyBaseMesh.position.set(maze.key.x, 0, maze.key.z);
+	gKeyBaseMesh.position.set(kMaze.key.x, 0, kMaze.key.z);
 	gScene.add(gKeyBaseMesh);
-	gKeyBaseLight.position.set(maze.key.x, 0.1, maze.key.z);
+	gKeyBaseLight.position.set(kMaze.key.x, 0.1, kMaze.key.z);
 	gKeyBaseLight.intensity = 0.04;
 
-	gKeyMesh.position.set(maze.key.x, 0.38, maze.key.z);
+	gKeyMesh.position.set(kMaze.key.x, 0.38, kMaze.key.z);
 	gScene.add(gKeyMesh);
-	gKeyLight.position.set(maze.key.x, 0.44, maze.key.z);
+	gKeyLight.position.set(kMaze.key.x, 0.44, kMaze.key.z);
 	gKeyLight.intensity = 0.1;
 	gKeyVisible = true;
 

@@ -68,8 +68,6 @@
 				const val = maze.data[x][z];
 				if (val === false) {
 					html += '<td class="wall">false</td>';
-				} else if (val === '.') {
-					html += '<td class="sq">&nbsp;</td>';
 				} else {
      				html += '<td class="sq">' + val + '</td>';
      			}
@@ -138,9 +136,9 @@
 	<tr><th class="sq">E</th><td>Path End</td></tr>
 	<tr><th class="sq">H</th><td>Hole in wall (exit)</td></tr>
 	<tr><th class="wall">false</th><td>Wall</td></tr>
-	<tr><th class="sq">*</th><td>Path from S to E</td></tr>
-	<tr><th class="sq">D</th><td>Dead end</td></tr>
-	<tr><th class="sq">K</th><td>Key</td></tr>
+	<tr><th class="sq"></th><td>Empty square</td></tr>
+	<tr><th class="sq">*</th><td>Empty square on path from S to E</td></tr>
+	<tr><th class="sq">D</th><td>Empty square (Dead end)</td></tr>
   </table>
  </body>
 </html>

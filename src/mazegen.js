@@ -20,7 +20,6 @@ function generateSolidMaze(level) {
 		size: {x: sizeX, z: sizeZ},
 		data: Array.from({length: sizeX}, () => Array(sizeZ).fill(false)),
 		deadends: [],
-		key: false,
 	};
 
 	const pos = generateStartAndExit(maze.size);
@@ -86,13 +85,6 @@ function generateRandomMaze(level) {
 	maze.data[maze.end.x][maze.end.z] = 'E';
 	maze.start.angle = rot * HALF_PI;
 
-	// if there are any deadends in the maze, pick a random one and put a key in it
-	if (maze.deadends.length > 0) {
-		const rnd = Math.floor(Math.random() * maze.deadends.length);
-		maze.key = maze.deadends[rnd];
-		maze.data[maze.key.x][maze.key.z] = 'K';
-	}
-
 	return maze;
 }
 
@@ -153,7 +145,7 @@ function makePathFrom(maze, x, z) {
 
 		// square, by default, is basic path
 		// must do this here because of the dead end check in the code above
-		maze.data[x][z] = '.';
+		maze.data[x][z] = '';
 
 		if (available.length === 1) {
 			// this is the only available direction
@@ -171,7 +163,7 @@ function makePathFrom(maze, x, z) {
 			maze.data[x + dir[0]][z + dir[1]] = '*';
 			toExit = true;
 		} else {
-			maze.data[x + dir[0]][z + dir[1]] = '.';
+			maze.data[x + dir[0]][z + dir[1]] = '';
 		}
 
 		// if there was only one direction available previously, there can't be any

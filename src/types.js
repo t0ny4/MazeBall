@@ -10,23 +10,37 @@
  *  end: {x: number, z: number},
  * 	exit: {x: number, z: number},
  * 	data: (boolean | number | string)[][],
- *  key: false | {x: number, z: number},
  *  deadends: [{x: number, z: number}],
  * }} MazeObject
  */
 
+/**
+ * @typedef {{
+ *  key: false | {x: number, z: number},
+ *  keyIndex: false | number,
+ * }} MazeKey
+ */
+
+/**
+ * @typedef { MazeObject & MazeKey } MazeWithKey
+ */
+
 /*
 	MazeObject.data is a 2D array representing the maze grid [x][z]
-	 Values are:
+	 Values from mazegen.js are:
+
 	  false: a wall
 	  'S' : initial player position (start)
 	  'E' : final player position (end)
 	  'H' : hole in maze wall (exit)
-	  '.' : empty square
+	  ''  : empty square
 	  '*' : empty square on the path from 'S' to 'E'
 	  'D' : a dead end
 
-	 MazeObject.exit is the hole in the wall where the player escapes the maze
+     Added by key.js
+	  'K' : key
+	  'L' : locked door
 
+	 MazeObject.exit is the hole in the wall where the player escapes the maze
 	 MazeObject.end is the square inside the maze, next to the exit
 */
