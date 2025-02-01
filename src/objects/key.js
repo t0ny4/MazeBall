@@ -6,6 +6,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as planck from 'planck';
 import global from '../global';
 import config from '../config';
+import * as sounds from '../sounds';
+
 
 const HALF_PI = Math.PI / 2;
 
@@ -106,6 +108,9 @@ function loadAssets(manager) {
 			gDoorMesh = global.errorMesh.clone();
 		}
 	);
+
+	sounds.addAssets(config.keySounds);
+	sounds.addGroups(config.keySoundGroups);
 }
 
 
@@ -140,6 +145,10 @@ function create(maze) {
 	if (maze.key === false) {
 		return;
 	}
+
+	// the exit is blocked by a door, so mark it as such (L = locked)
+	const {x, z} = gCurrentMaze.exit;
+	gCurrentMaze.data[x][z] = 'L';
 
 	// door position calculations
 	let doorX = maze.exit.x;
@@ -204,6 +213,11 @@ function collect() {
 	gScene.remove(gKeyMesh);
 	gKeyLight.intensity = 0;
 	gKeyVisible = false;
+	sounds.play('keyPickup');
+
+	// the door is no longer blocking the exit
+	const {x, z} = gCurrentMaze.exit;
+	gCurrentMaze.data[x][z] = 'H';
 
 	// remove closed door physics body
 	if (gDoorBody !== null) {
@@ -218,13 +232,13 @@ function collect() {
 	let doorShape;
 	let rotateY = 0;
 	if (exitDir === 'L' || exitDir === 'R') {
-		doorX += (exitDir=== 'R') ? 0.5 : -0.5;
+		doorX += (exitDir === 'R') ? 0.5 : -0.5;
 		doorZ += 0.5;
 		doorShape = gDoorShapeHoriz;
 	} else {
 		rotateY = HALF_PI;
 		doorX += 0.5;
-		doorZ += (exitDir=== 'D') ? 0.5 : -0.5;
+		doorZ += (exitDir === 'D') ? 0.5 : -0.5;
 		doorShape = gDoorShapeVert;
 	}
 

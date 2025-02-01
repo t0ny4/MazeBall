@@ -14,12 +14,15 @@ A modern, partial re-implementation of Astray [[https://github.com/wwwtyro/Astra
 - vite
 
 ## Textures
-- "Tiny Texture Pack 1" by Screaming Brain Studios: [[https://opengameart.org/content/tiny-texture-pack-1](https://opengameart.org/content/tiny-texture-pack-1)]
+- "Tiny Texture Pack 1" by Screaming Brain Studios [[https://opengameart.org/content/tiny-texture-pack-1](https://opengameart.org/content/tiny-texture-pack-1)]
 
 ## Models
 - Key by Quaternius [[https://poly.pizza/m/bg6e1lfNsO](https://poly.pizza/m/bg6e1lfNsO)]
 - Teleporter base by Quaternius  [[https://poly.pizza/m/OIezStCmak](https://poly.pizza/m/OIezStCmak)]
 - Arch Door by Quaternius  [[https://poly.pizza/m/MVVMLXOfg1](https://poly.pizza/m/MVVMLXOfg1)]
+
+## Sounds
+- "Free casual game sounds" by Dustyroom game studio [[https://dustyroom.com/free-casual-game-sounds/](https://dustyroom.com/free-casual-game-sounds/)]
 
 ---
 

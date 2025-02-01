@@ -6,6 +6,7 @@ import * as planck from 'planck';
 import global from '../global';
 import config from '../config';
 import * as key from './key';
+import * as sounds from '../sounds';
 
 
 const HALF_PI = Math.PI / 2;
@@ -77,6 +78,9 @@ function loadAssets(manager) {
 			}
 		);
 	}
+
+	sounds.addAssets(config.mazeSounds);
+	sounds.addGroups(config.mazeSoundGroups);
 }
 
 
@@ -243,6 +247,11 @@ function updatePlayerPosition(x, y, z) {
 	if (gPlayerGridInfo.type === 'K') {
 		key.collect();
 		gCurrentMaze.data[gPlayerGridInfo.x][gPlayerGridInfo.z] = 'D';
+	}
+
+	// current square is a Locked door
+	if (gPlayerGridInfo.type === 'L') {
+		sounds.play('locked');
 	}
 }
 

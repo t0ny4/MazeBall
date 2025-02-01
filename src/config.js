@@ -15,11 +15,22 @@ const config = {
 	randomSeed:			0,		// for debugging, falsy value = don't use a seed
 
 
+	// sounds.js
+	soundsDir:			'./sounds/',
+
+
 	// key.js
 	modelDir:			'./models/',
 	keyModelFile:		'Key.glb',
 	baseModelFile:		'TeleporterBase.glb',
 	doorModelFile:		'ArchDoor.glb',
+	/** @type {Object.<string, string>} */
+	keySounds:			{
+		keyPickup:	'DM-CGS-03.ogg',
+	},
+	/** @type {Object.<string, string[]>} */
+	keySoundGroups: {
+	},
 
 
 	// objects/ball.js
@@ -35,6 +46,16 @@ const config = {
 		'Tile11.png', 'Tile4.png', 'Tile18.png',
 		'Tile20.png', 'Tile21.png', 'Tile23.png',
 	],
+	/** @type {Object.<string, string>} */
+	mazeSounds: {
+		locked:	'DM-CGS-10.ogg',
+		dm12: 'DM-CGS-12.ogg',
+		dm26: 'DM-CGS-26.ogg',
+	},
+	/** @type {Object.<string, string[]>} */
+	mazeSoundGroups: {
+		mazeExit: ['dm12', 'dm26'],
+	},
 
 
 	// controls.js

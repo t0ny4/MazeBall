@@ -14,6 +14,7 @@ import * as key from './src/objects/key';
 import * as player from './src/player';
 import * as debug from './src/debug';
 import * as firstPerson from './src/first_person';
+import * as sounds from './src/sounds';
 
 
 // override javascript builtin prng with alea, using seed if configured
@@ -37,7 +38,8 @@ let gGameState = GameStates.init;
 
 document.addEventListener("DOMContentLoaded", () => {
 	loadAssets(
-		[player, maze, key],
+		// sounds must come last
+		[player, maze, key, sounds],
 		setup
 	);
 });
@@ -98,6 +100,7 @@ function setup() {
 	bindControlKeys();
 	debug.setup();
 	firstPerson.setup();
+	sounds.setup();
 	// now everything is set up, start the game loop
 	requestAnimationFrame(game_loop);
 }
@@ -139,6 +142,7 @@ function game_loop() {
 				gLevel++;
 				global.mazeExited = true;
 				gGameState = GameStates.fadeOut;
+				sounds.playFromGroup('mazeExit');
 			}
 		}
 		break;
