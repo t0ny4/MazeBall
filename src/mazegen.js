@@ -1,28 +1,43 @@
 /* SPDX-License-Identifier: 0BSD */
 
 import './types';
+import aleaPRNG from './aleaPRNG';
 
 const HALF_PI = Math.PI / 2;
+const gMazeRnd = aleaPRNG();
 
 
 /**
  * create a maze that is entirely solid apart from the exit hole in the outer wall
- * @param {Number} level
+ * @param {Number} xSize
+ * @param {Number} zSize
+ * @param {*} seed
  * @return {MazeObject}
  */
-function generateSolidMaze(level) {
+function generateSolidMaze(xSize, zSize, seed) {
 
-	const sizeX = 5 + (level * 2);
-	const sizeZ = sizeX;
+	// impossible to generate a valid maze with a side length less than 3
+	if (xSize < 3) { xSize = 3; }
+	if (zSize < 3) { zSize = 3; }
+
+	// force dimensions to be odd if they are not
+	const size = {x: (xSize | 1), z: (zSize | 1)};
+
+	if (seed === undefined) {
+		seed = Math.random().toString().substring(2);
+	}
+
+	gMazeRnd.seed(seed);
 
 	/** @type {MazeObject} */
 	const maze = {
-		size: {x: sizeX, z: sizeZ},
-		data: Array.from({length: sizeX}, () => Array(sizeZ).fill(false)),
+		size,
+		data: Array.from({length: size.x}, () => Array(size.z).fill(false)),
 		deadends: [],
+		seed: seed,
 	};
 
-	const pos = generateStartAndExit(maze.size);
+	const pos = generateStartAndExit(size);
 
 	maze.start = pos.start;
 	maze.start.angle = 0;
@@ -38,12 +53,14 @@ function generateSolidMaze(level) {
 
 /**
  * generate a maze with no internal walls, for debugging
- * @param {Number} level
+ * @param {Number} xSize
+ * @param {Number} zSize
+ * @param {*} seed
  * @return {MazeObject}
  */
-function generateEmptyMaze(level) {
+function generateEmptyMaze(xSize, zSize, seed) {
 
-	const maze = generateSolidMaze(level);
+	const maze = generateSolidMaze(xSize, zSize, seed);
 
 	// carve out the entire maze, except the outer walls
 	for (let x = 1; x < maze.size.x - 1; x++) {
@@ -58,11 +75,14 @@ function generateEmptyMaze(level) {
 
 /**
  * generate a maze with a random internal path
- * @param {Number} level
+ * @param {Number} xSize
+ * @param {Number} zSize
+ * @param {*} seed
+ * @return {MazeObject}
  */
-function generateRandomMaze(level) {
+function generateRandomMaze(xSize, zSize, seed) {
 
-	const maze = generateSolidMaze(level);
+	const maze = generateSolidMaze(xSize, zSize, seed);
 
 	makePathFrom(maze, maze.start.x, maze.start.z);
 
@@ -152,7 +172,7 @@ function makePathFrom(maze, x, z) {
 			[dir] = available;
 		} else {
 			// pick one of the available directions at random
-			dir = available[Math.floor(Math.random() * available.length)];
+			dir = available[Math.floor(gMazeRnd() * available.length)];
 		}
 
 		// the next but one square in the chosen direction is the starting
@@ -189,13 +209,13 @@ function generateStartAndExit(size) {
 	const start = {};
 	const exit = {};
 
-	let top = Math.random() > 0.5;
-	let left = Math.random() > 0.5;
+	let top = gMazeRnd() > 0.5;
+	let left = gMazeRnd() > 0.5;
 
 	start.x = left ? 1 : size.x - 2;
 	start.z = top ?  1 : size.z - 2;
 
-	const r = Math.random();
+	const r = gMazeRnd();
 	if (r > 0.5) {
 		// exit diagonal opposite
 		top = !top;
@@ -213,7 +233,7 @@ function generateStartAndExit(size) {
 
 	const end = {...exit};
 
-	if (Math.random() > 0.5) {
+	if (gMazeRnd() > 0.5) {
 		// vertical exit
 		exit.z += dz;
 		exit.dir = top ? 'U' : 'D';
@@ -232,7 +252,6 @@ const _MODULE = 'mazegen.js';
 
 export {
 	_MODULE,
-	//generateSolidMaze as generateMazeData,
 	//generateEmptyMaze as generateMazeData,
 	generateRandomMaze as generateMazeData,
 };

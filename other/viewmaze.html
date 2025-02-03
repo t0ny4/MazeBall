@@ -47,12 +47,15 @@
 	function showMaze() {
 
 		let level = parseInt(levelInput.value, 10);
+
 		if (!level || level < 1) {
 			levelInput.value = defaultLevel;
 			level = defaultLevel;
 		}
 
-		const maze = generateMazeData(level);
+		const dimension = 5 + (level * 2);
+
+		const maze = generateMazeData(dimension, dimension);
 
 		let html = '<table class="maze"><tr><th></th>';
 

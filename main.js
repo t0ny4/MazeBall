@@ -114,9 +114,12 @@ function game_loop() {
 	switch (gGameState) {
 
 		case GameStates.init: {
-			const mazeData = generateMazeData(gLevel);
+			const mazeSeed = Math.random().toString().substring(2);
+			const dimension = 5 + (gLevel * 2);
+			const mazeData = generateMazeData(dimension, dimension, mazeSeed);
 			maze.create(mazeData);
 			key.create(mazeData);
+			//console.log(mazeData.seed, mazeData.size, mazeData.keyIndex);
 			player.setNewMaze(mazeData);
 			debug.reset();
 			gGameState = GameStates.fadeIn;
