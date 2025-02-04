@@ -46,8 +46,8 @@ function setup(el = document.body) {
 	global.fog = new THREE.Fog(config.bgColour, 5, 10);
 	global.scene.fog = global.fog;
 
-	//const helper = new THREE.CameraHelper(gSunLight.shadow.camera);
-	//global.scene.add(helper);
+	// const helper = new THREE.CameraHelper(gSunLight.shadow.camera);
+	// global.scene.add(helper);
 }
 
 
@@ -75,7 +75,7 @@ function update(doUpdate = true) {
 			const xDiff = playerPos.x - global.camera.position.x;
 			const zDiff = playerPos.z - global.camera.position.z;
 
-			if (xDiff !== 0 || zDiff !== 0 ) {
+			if (xDiff !== 0 || zDiff !== 0) {
 				// camera is still moving, need to do a renderer update
 				cameraMoving = true;
 
@@ -96,7 +96,7 @@ function update(doUpdate = true) {
 	}
 
 	if (doUpdate || cameraMoving) {
-		//console.log('render.update() calling global.renderer.render()');
+		// console.log('render.update() calling global.renderer.render()');
 		global.renderer.render(global.scene, global.camera);
 	}
 }

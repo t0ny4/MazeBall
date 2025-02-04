@@ -83,7 +83,7 @@ function setup() {
 		}
 	}, {once: true});
 
-	gIsFirefox = /firefox/i.test(navigator.userAgent);
+	gIsFirefox = (/firefox/i).test(navigator.userAgent);
 
 	document.body.addEventListener('keydown', handleKeyDown, {once: true});
 }

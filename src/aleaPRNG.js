@@ -5,7 +5,8 @@
 	MWC (Multiply-with-Carry) by George Marsaglia and Arif Zaman (1991)
 	Original work copyright © 2010 Johannes Baagøe, under MIT license
 	This version is just a "re-packaging" of v1.1, a derivative work copyright
-	(c) 2017-2020, W. Mac" McMeans, under BSD 3-Clause License. https://github.com/macmcmeans/aleaPRNG
+	(c) 2017-2020, W. Mac" McMeans, under BSD 3-Clause License.
+	https://github.com/macmcmeans/aleaPRNG
 */
 
 
@@ -48,7 +49,7 @@ export default function aleaPRNG(...args) {
 			s2 -= mash(seed[i]);
 			if (s2 < 0) { s2 += 1; }
 		}
-	};
+	}
 
 
 	/**
@@ -72,19 +73,19 @@ export default function aleaPRNG(...args) {
 
 				let h = 0.02519603282416938 * n;
 
-				n  = h >>> 0;
+				n = h >>> 0;
 				h -= n;
 				h *= n;
-				n  = h >>> 0;
+				n = h >>> 0;
 				h -= n;
 				n += h * 4294967296; // 0x100000000      2^32
 			}
 
 			return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
-		};
+		}
 
 		return mash;
-	};
+	}
 
 
 	/**
@@ -95,7 +96,7 @@ export default function aleaPRNG(...args) {
 	 */
 	function isInteger(n) {
 		return parseInt(n, 10) === n;
-	};
+	}
 
 
 	/**
@@ -105,14 +106,14 @@ export default function aleaPRNG(...args) {
 	 */
 	function random() {
 
-		const t = 2091639 * s0 + c * 2.3283064365386963e-10; // 2^-32
+		const t = (2091639 * s0) + (c * 2.3283064365386963e-10); // 2^-32
 
 		s0 = s1;
 		s1 = s2;
 		s2 = t - (c = t | 0);
 
 		return s2;
-	};
+	}
 
 
 	/**
@@ -120,7 +121,7 @@ export default function aleaPRNG(...args) {
 	 * @public
 	 */
 	random.fract53 = function () {
-		return random() + (random() * 0x200000 | 0) * 1.1102230246251565e-16; // 2^-53
+		return random() + ((random() * 0x200000 | 0) * 1.1102230246251565e-16); // 2^-53
 	};
 
 
@@ -166,7 +167,7 @@ export default function aleaPRNG(...args) {
 		}
 
 		// return float
-		return random() * (hiBound - loBound) + loBound;
+		return (random() * (hiBound - loBound)) + loBound;
 	};
 
 
@@ -189,4 +190,4 @@ export default function aleaPRNG(...args) {
 
 
 	return random;
-};
+}

@@ -18,7 +18,7 @@ let gPlayerLight;
 /** in Radians */
 let gAngle = 0;
 /** @type {function(number,number,number):void} */
-let gUpdateMazePosition = () => {console.warn('gUpdateMazePosition not set');};
+let gUpdateMazePosition = () => { console.warn('gUpdateMazePosition not set'); };
 
 
 const gZeroZero = new planck.Vec2(0, 0);
@@ -77,8 +77,8 @@ function update() {
 			// make the force vector relative to the angle the player is facing
 			const cos = Math.cos(gAngle);
 			const sin = Math.sin(gAngle);
-			const x = cos * keyForce.x - sin * keyForce.y;
-			const y = sin * keyForce.x + cos * keyForce.y;
+			const x = (cos * keyForce.x) - (sin * keyForce.y);
+			const y = (sin * keyForce.x) + (cos * keyForce.y);
 			keyForce.x = x;
 			keyForce.y = y;
 		}

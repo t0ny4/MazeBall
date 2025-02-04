@@ -57,4 +57,4 @@ const handler = {
  */
 export default new Proxy(Object.seal(global), handler);
 
-//export default global;
+// export default global;

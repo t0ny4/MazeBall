@@ -1,5 +1,6 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
+import stylisticJs from '@stylistic/eslint-plugin-js';
 
 export default [
 	pluginJs.configs.recommended,
@@ -9,7 +10,61 @@ export default [
     	},
     },
     {
+    	plugins: {
+            '@stylistic/js': stylisticJs
+        },
     	rules: {
+    		"@stylistic/js/semi": "warn",
+    		"array-bracket-spacing": "warn",
+    		"arrow-parens": "warn",
+    		"arrow-spacing": "warn",
+    		"block-spacing": "warn",
+			"comma-spacing": "warn",
+			"comma-style": "warn",
+			"computed-property-spacing": "warn",
+			"dot-location": "warn",
+			"eol-last": "warn",
+			"@stylistic/js/function-call-spacing": "warn",
+			"function-paren-newline": "warn",
+			"generator-star-spacing": "warn",
+			"implicit-arrow-linebreak": "warn",
+			//"key-spacing": "warn",
+			"keyword-spacing": "warn",
+			"linebreak-style": "warn",
+			"lines-between-class-members": "warn",
+			"max-len": ["warn", 100],
+			"max-statements-per-line": ["warn", {"max": 2}],
+			"new-parens": "warn",
+			"no-confusing-arrow": "warn",
+			"no-extra-semi": "warn",
+			"no-floating-decimal": "warn",
+			"no-mixed-operators": "warn",
+			"no-mixed-spaces-and-tabs": "warn",
+			"no-multi-spaces": "warn",
+			"no-multiple-empty-lines": "warn",
+			"no-trailing-spaces": "warn",
+			"no-whitespace-before-property": "warn",
+			"nonblock-statement-body-position": "warn",
+			"object-curly-newline": "warn",
+			"one-var-declaration-per-line": "warn",
+			"operator-linebreak": "warn",
+			"padding-line-between-statements": "warn",
+			"quotes": ["warn", "single"],
+			"rest-spread-spacing": "warn",
+			"semi-spacing": "warn",
+			"semi-style": "warn",
+			"space-before-blocks": "warn",
+			"space-before-function-paren": ["warn", {"anonymous": "always", "named": "never", "asyncArrow": "never"}],
+			"space-in-parens": "warn",
+			"space-infix-ops": "warn",
+			"space-unary-ops": "warn",
+			"spaced-comment": "warn",
+			"switch-colon-spacing": "warn",
+			"template-curly-spacing": "warn",
+			"wrap-iife": "warn",
+			"wrap-regex": "warn",
+			"yield-star-spacing": "warn",
+    		//
     		"array-callback-return": "warn",
     		"no-constructor-return": "warn",
     		"no-duplicate-imports": "warn",
@@ -96,7 +151,7 @@ export default [
     	}
     },
 	{
-        ignores: ["*.config.js", "dist/*"]
+        ignores: ["*.config.*", "dist/*"]
     },
     {
     	files: ["src/global.js"],

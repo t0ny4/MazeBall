@@ -11,21 +11,18 @@ const gMazeRnd = aleaPRNG();
  * create a maze that is entirely solid apart from the exit hole in the outer wall
  * @param {Number} xSize
  * @param {Number} zSize
- * @param {*} seed
+ * @param {*} [mazeSeed]
  * @return {MazeObject}
  */
-function generateSolidMaze(xSize, zSize, seed) {
+function generateSolidMaze(xSize, zSize, mazeSeed) {
 
-	// impossible to generate a valid maze with a side length less than 3
-	if (xSize < 3) { xSize = 3; }
-	if (zSize < 3) { zSize = 3; }
+	// force dimensions to be odd and at least 3
+	const x = xSize < 3 ? 3 : xSize | 1;
+	const z = zSize < 3 ? 3 : zSize | 1;
 
-	// force dimensions to be odd if they are not
-	const size = {x: (xSize | 1), z: (zSize | 1)};
+	const size = {x, z};
 
-	if (seed === undefined) {
-		seed = Math.random().toString().substring(2);
-	}
+	const seed = (mazeSeed === undefined) ? Math.random().toString().substring(2) : mazeSeed;
 
 	gMazeRnd.seed(seed);
 
@@ -118,7 +115,9 @@ function generateRandomMaze(xSize, zSize, seed) {
  */
 function makePathFrom(maze, x, z) {
 
-	/** indicates if this square is the exit or one of the forward paths from this square leads to the exit */
+	/** indicates if this square is the exit or one of the
+	 *   forward paths from this square leads to the exit
+	 */
 	let toExit = (x === maze.end.x && z === maze.end.z);
 
 	while (true) {
@@ -177,7 +176,7 @@ function makePathFrom(maze, x, z) {
 
 		// the next but one square in the chosen direction is the starting
 		// point for the next iteration
-		const leadsToExit = makePathFrom(maze, x + dir[0] * 2, z + dir[1] * 2);
+		const leadsToExit = makePathFrom(maze, x + (dir[0] * 2), z + (dir[1] * 2));
 
 		if (leadsToExit) {
 			maze.data[x + dir[0]][z + dir[1]] = '*';
@@ -213,7 +212,7 @@ function generateStartAndExit(size) {
 	let left = gMazeRnd() > 0.5;
 
 	start.x = left ? 1 : size.x - 2;
-	start.z = top ?  1 : size.z - 2;
+	start.z = top ? 1 : size.z - 2;
 
 	const r = gMazeRnd();
 	if (r > 0.5) {
@@ -228,7 +227,7 @@ function generateStartAndExit(size) {
 
 	exit.x = left ? 1 : size.x - 2;
 	const dx = left ? -1 : 1;
-	exit.z = top ?  1 : size.z - 2;
+	exit.z = top ? 1 : size.z - 2;
 	const dz = top ? -1 : 1;
 
 	const end = {...exit};
@@ -252,6 +251,6 @@ const _MODULE = 'mazegen.js';
 
 export {
 	_MODULE,
-	//generateEmptyMaze as generateMazeData,
+	// generateEmptyMaze as generateMazeData,
 	generateRandomMaze as generateMazeData,
 };

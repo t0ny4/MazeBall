@@ -24,13 +24,13 @@ const HALF_PI = Math.PI / 2;
 function setup() {
 
 	if (!gPointerLockAvailable) {
-		console.log('browser does not support pointer lock, first person view will not be available');
+		console.log('browser does not support pointer lock, no first person view available');
 		return;
 	}
 
 	setKeyHandler('first_person', toggleFirstPerson);
 
-	addEventListener("pointerlockchange", () => {
+	addEventListener('pointerlockchange', () => {
 		if (global.orbitControlsEnabled) {
 			if (document.pointerLockElement) {
 				console.log('Cannot switch to first person view while orbit controls are active');
@@ -56,7 +56,7 @@ function setup() {
 		}
 		global.renderUpdate();
 	});
-};
+}
 
 
 function toggleFirstPerson() {

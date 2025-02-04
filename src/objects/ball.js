@@ -18,7 +18,7 @@ let gPhysicsBody;
 /** @type {THREE.Texture} */
 let gBallTexture;
 /** @type {function(number,number,number):void} */
-let gUpdateMazePosition = () => {console.warn('gUpdateMazePosition not set');};
+let gUpdateMazePosition = () => { console.warn('gUpdateMazePosition not set'); };
 
 
 /**
@@ -28,7 +28,8 @@ function loadAssets(manager) {
 
 	const textureLoader = new THREE.TextureLoader(manager);
 
-	textureLoader.load(config.textureDir + 'ball/' + config.ballTextureFile,
+	textureLoader.load(
+		config.textureDir + 'ball/' + config.ballTextureFile,
 		(texture) => {
 			gBallTexture = texture;
 			gBallTexture.colorSpace = THREE.SRGBColorSpace;

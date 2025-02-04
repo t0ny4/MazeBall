@@ -36,7 +36,7 @@ const GameStates = Object.freeze({
 let gLevel = 1;
 let gGameState = GameStates.init;
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
 	loadAssets(
 		// sounds must come last
 		[player, maze, key, sounds],
@@ -62,9 +62,9 @@ function loadAssets(objs, callback) {
 		hadErrors = true;
 	};
 
-	//manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+	// manager.onProgress = function(url, itemsLoaded, itemsTotal) {
 	//	console.log('Loading asset file: ' + url + ' [' + itemsLoaded + ' of ' + itemsTotal + ']');
-	//};
+	// };
 
 	manager.onLoad = () => {
 		if (!initDone) {
@@ -76,7 +76,7 @@ function loadAssets(objs, callback) {
 		callback();
 	};
 
-	objs.forEach(obj => {
+	objs.forEach((obj) => {
 		if (typeof obj.loadAssets === 'function') {
 			obj.loadAssets(manager);
 		} else {
@@ -119,7 +119,7 @@ function game_loop() {
 			const mazeData = generateMazeData(dimension, dimension, mazeSeed);
 			maze.create(mazeData);
 			key.create(mazeData);
-			//console.log(mazeData.seed, mazeData.size, mazeData.keyIndex);
+			// console.log(mazeData.seed, mazeData.size, mazeData.keyIndex);
 			player.setNewMaze(mazeData);
 			debug.reset();
 			gGameState = GameStates.fadeIn;
@@ -160,7 +160,7 @@ function game_loop() {
 
 		case GameStates.pause:
 			// insert a short delay before changing to the next level
-			setTimeout(() => {gGameState = GameStates.init;}, 800);
+			setTimeout(() => { gGameState = GameStates.init; }, 800);
 			gGameState = GameStates.idle;
 		break;
 
@@ -169,7 +169,7 @@ function game_loop() {
 		break;
 
 		default:
-			console.log('game_loop(): Unknown game state: ' +  gGameState);
+			console.log('game_loop(): Unknown game state: ' + gGameState);
 			gGameState = GameStates.pause;
 		break;
 	}
@@ -195,7 +195,7 @@ function makeErrorTexture() {
 	const data = new Uint8Array(size);
 
 	for (let i = 0; i < size; i += 4) {
-		data[i]     = 0xff;
+		data[i] = 0xff;
 		data[i + 1] = 0x69;
 		data[i + 2] = 0xb4;
 		data[i + 3] = 0xff;

@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import Stats from 'three/addons/libs/stats.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls';
-import { setKeyHandler } from "./controls";
+import { setKeyHandler } from './controls';
 import global from './global';
 import config from './config';
 import * as player from './player';
@@ -17,7 +17,7 @@ let gStats;
 
 function setup() {
 
-	gStats = new Stats()
+	gStats = new Stats();
 	document.body.appendChild(gStats.dom);
 
 	setKeyHandler('orbit_controls', keyHandlerControls);
@@ -61,7 +61,7 @@ function keyHandlerControls() {
 	const playerPos = player.getPosition();
 	if (global.orbitControlsEnabled) {
 		console.log('Orbit controls enabled');
-		gCameraYpos = global.camera.position.y
+		gCameraYpos = global.camera.position.y;
 
 		gControls.target.set(playerPos.x, playerPos.y, playerPos.z);
 	} else {

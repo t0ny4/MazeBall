@@ -22,7 +22,7 @@ const gPlayerPos = {x: 0, y: 0, z: 0};
 const gPlayerGridInfo = {x: 0, z: 0, type: ''};
 
 /** @type {THREE.Scene} */
-let gScene
+let gScene;
 /** @type {THREE.Camera} */
 let gCamera;
 /** @type {THREE.PointLight} */
@@ -53,7 +53,8 @@ function loadAssets(manager) {
 	const textureLoader = new THREE.TextureLoader(manager);
 
 	for (const file of config.wallTextureFiles) {
-		textureLoader.load(config.textureDir + 'walls/' + file,
+		textureLoader.load(
+			config.textureDir + 'walls/' + file,
 			(texture) => {
 				texture.colorSpace = THREE.SRGBColorSpace;
 				gWallTextures.push(texture);
@@ -67,7 +68,8 @@ function loadAssets(manager) {
 	}
 
 	for (const file of config.floorTextureFiles) {
-		textureLoader.load(config.textureDir + 'floors/' + file,
+		textureLoader.load(
+			config.textureDir + 'floors/' + file,
 			(texture) => {
 				texture.colorSpace = THREE.SRGBColorSpace;
 				gFloorTextures.push(texture);
@@ -190,8 +192,8 @@ function mazeMesh(maze) {
 	const matrix = new THREE.Matrix4();
 
 	for (let x = 0; x < maze.size.x; x++) {
-	 	for (let z = 0; z < maze.size.z; z++) {
-	 		if (maze.data[x][z] === false) {
+		for (let z = 0; z < maze.size.z; z++) {
+			if (maze.data[x][z] === false) {
 				matrix.setPosition(x, config.mazeHeight / 2, z);
 				mesh.setMatrixAt(mesh.count++, matrix);
 			}

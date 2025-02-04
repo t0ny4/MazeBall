@@ -25,14 +25,14 @@ function bindControlKeys() {
 	bindKey(config.controlKeys.down, { onPressed: down, onReleased: up});
 	bindKey(config.controlKeys.left, { onPressed: left, onReleased: right});
 	bindKey(config.controlKeys.right, { onPressed: right, onReleased: left});
-};
+}
 
 
 /**
  * @param {Function} handler
  */
 function bindMouseMove(handler) {
-	addEventListener("pointermove", handler, false);
+	addEventListener('pointermove', handler, false);
 }
 
 
@@ -40,7 +40,7 @@ function bindMouseMove(handler) {
  * @param {Function} handler
  */
 function unbindMouseMove(handler) {
-	removeEventListener("pointermove", handler);
+	removeEventListener('pointermove', handler);
 }
 
 
