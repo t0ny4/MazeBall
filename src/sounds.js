@@ -15,6 +15,10 @@ const gSoundFiles = {};
 const gSoundGroups = {};
 /** @type {THREE.AudioListener} */
 let gListener = null;
+/** @type {Boolean} */
+let gSoundInitDone = false;
+/** @type {Boolean} */
+let gIsFirefox = false;
 
 
 /**
@@ -65,17 +69,42 @@ function addGroups(groupObj) {
 
 function setup() {
 	document.body.addEventListener('click', () => {
-		createSounds();
+		if (!gSoundInitDone) {
+			initSounds();
+		}
 	}, {once: true});
+
+	gIsFirefox = /firefox/i.test(navigator.userAgent);
+
+	document.body.addEventListener('keydown', handleKeyDown, {once: true});
 }
 
 
-function createSounds() {
+/**
+ * @param {KeyboardEvent} e
+ */
+function handleKeyDown(e) {
 
-	if (gListener === null) {
-		gListener = new THREE.AudioListener();
-		global.camera.add(gListener);
+	// it appears that firefox does not consider pressing a key, with a name longer than
+	// one character, to be a "user gesture" for the purposes of AudioContext creation
+	if (gIsFirefox && e.key.length > 1) {
+		if (!gSoundInitDone) {
+			// wait for the next keydown event to try again
+			document.body.addEventListener('keydown', handleKeyDown, {once: true});
+		}
+		return;
 	}
+
+	if (!gSoundInitDone) {
+		initSounds();
+	}
+}
+
+
+function initSounds() {
+
+	gListener = new THREE.AudioListener();
+	global.camera.add(gListener);
 
 	const audioContext = new AudioContext();
 
@@ -88,12 +117,14 @@ function createSounds() {
 					(buf) => {
 						gSounds[buffer].setBuffer(buf);
 						gSounds[buffer].setLoop(false);
-						gBuffers[buffer] = null;
+						delete gBuffers[buffer];
 					}
 				);
 			}
 		}
 	}
+
+	gSoundInitDone = true;
 }
 
 
