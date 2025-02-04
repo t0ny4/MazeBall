@@ -25,6 +25,10 @@
  * @typedef { MazeObject & MazeKey } MazeWithKey
  */
 
+/**
+ * @typedef {{filename: string, volume?: number}} SoundInfo
+ */
+
 /*
 	MazeObject.data is a 2D array representing the maze grid [x][z]
 	 Values from mazegen.js are:

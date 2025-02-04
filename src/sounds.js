@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: 0BSD */
 
+import './types';
 import * as THREE from 'three';
 import global from './global';
 import config from './config';
@@ -9,7 +10,7 @@ import config from './config';
 const gBuffers = {};
 /** @type {Object.<string, THREE.Audio>} */
 const gSounds = {};
-/** @type {Object.<string, string>} */
+/** @type {Object.<string, {filename: string, volume: number}>} */
 const gSoundFiles = {};
 /** @type {Object.<string, string[]>} */
 const gSoundGroups = {};
@@ -29,13 +30,13 @@ function loadAssets(manager) {
 	const fileLoader = new THREE.FileLoader(manager);
 	fileLoader.setResponseType('arraybuffer');
 
-	for (const sound in gSoundFiles) {
-		if (Object.hasOwn(gSoundFiles, sound)) {
+	for (const soundName in gSoundFiles) {
+		if (Object.hasOwn(gSoundFiles, soundName)) {
 			fileLoader.load(
-				config.soundsDir + gSoundFiles[sound],
+				config.soundsDir + gSoundFiles[soundName].filename,
 				/** @param {ArrayBuffer} buf */
 				(buf) => {
-					gBuffers[sound] = buf.transfer();
+					gBuffers[soundName] = buf.transfer();
 				}
 			);
 		}
@@ -44,12 +45,20 @@ function loadAssets(manager) {
 
 
 /**
- * @param {Object.<string, string>} assetObj
+ * @param {Object.<string, string | SoundInfo>} assetObj
  */
 function addAssets(assetObj) {
-	for (const assetName in assetObj) {
-		if (Object.hasOwn(assetObj, assetName)) {
-			gSoundFiles[assetName] = assetObj[assetName];
+	for (const soundName in assetObj) {
+		if (Object.hasOwn(assetObj, soundName)) {
+			const soundData = assetObj[soundName];
+			if (typeof soundData === 'string') {
+				gSoundFiles[soundName] = {filename: soundData, volume: 1.0};
+			} else if (typeof soundData === 'object') {
+				if (soundData.filename) {
+					gSoundFiles[soundName] = {filename: soundData.filename};
+					gSoundFiles[soundName].volume = soundData.volume ? soundData.volume : 1.0;
+				}
+			}
 		}
 	}
 }
@@ -108,16 +117,17 @@ function initSounds() {
 
 	const audioContext = new AudioContext();
 
-	for (const buffer in gBuffers) {
-		if (Object.hasOwn(gBuffers, buffer)) {
-			if (!gSounds[buffer]) {
-				gSounds[buffer] = new THREE.Audio(gListener);
+	for (const soundName in gBuffers) {
+		if (Object.hasOwn(gBuffers, soundName)) {
+			if (!gSounds[soundName]) {
+				gSounds[soundName] = new THREE.Audio(gListener);
 				audioContext.decodeAudioData(
-					gBuffers[buffer],
+					gBuffers[soundName],
 					(buf) => {
-						gSounds[buffer].setBuffer(buf);
-						gSounds[buffer].setLoop(false);
-						delete gBuffers[buffer];
+						gSounds[soundName].setBuffer(buf);
+						gSounds[soundName].setLoop(false);
+						gSounds[soundName].setVolume(gSoundFiles[soundName].volume);
+						delete gBuffers[soundName];
 					}
 				);
 			}

@@ -24,7 +24,7 @@ const config = {
 	keyModelFile:		'Key.glb',
 	baseModelFile:		'TeleporterBase.glb',
 	doorModelFile:		'ArchDoor.glb',
-	/** @type {Object.<string, string>} */
+	/** @type {Object.<string, string | SoundInfo>} */
 	keySounds:			{
 		keyPickup:	'DM-CGS-03.ogg',
 	},
@@ -46,11 +46,11 @@ const config = {
 		'Tile11.png', 'Tile4.png', 'Tile18.png',
 		'Tile20.png', 'Tile21.png', 'Tile23.png',
 	],
-	/** @type {Object.<string, string>} */
+	/** @type {Object.<string, string | SoundInfo>} */
 	mazeSounds: {
-		locked:	'DM-CGS-10.ogg',
-		dm12: 'DM-CGS-12.ogg',
-		dm26: 'DM-CGS-26.ogg',
+		locked: {filename: 'DM-CGS-10.ogg', volume: 0.3},
+		dm12:   {filename: 'DM-CGS-12.ogg', volume: 0.25},
+		dm26:   {filename: 'DM-CGS-26.ogg', volume: 0.4},
 	},
 	/** @type {Object.<string, string[]>} */
 	mazeSoundGroups: {
