@@ -107,6 +107,7 @@ function create(maze) {
 	const bodyDefinition = {
 		type: 'static',
 		position: {x: 0, y: 0},
+		userData: 'wall',
 	};
 
 	const boxShape = new planck.BoxShape(0.5, 0.5);
@@ -249,11 +250,6 @@ function updatePlayerPosition(x, y, z) {
 	if (gPlayerGridInfo.type === 'K') {
 		key.collect();
 		gCurrentMaze.data[gPlayerGridInfo.x][gPlayerGridInfo.z] = 'D';
-	}
-
-	// current square is a Locked door
-	if (gPlayerGridInfo.type === 'L') {
-		sounds.play('locked');
 	}
 }
 

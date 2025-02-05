@@ -57,6 +57,7 @@ function setup(updatePositionFunc) {
 		position: gVec2ZeroZero,
 		awake: false,
 		fixedRotation: true,
+		userData: 'ball',
 	});
 
 	gPhysicsBody.createFixture({

@@ -56,6 +56,8 @@ function setup() {
 	gDoorShapeHoriz = new planck.BoxShape(0.5, 0.04);
 	gDoorShapeVert = new planck.BoxShape(0.04, 0.5);
 
+	global.physicsWorld.addContactCallback('ball', 'closed_door', () => { sounds.play('locked'); });
+
 	gWasSetupCalled = true;
 }
 
@@ -177,11 +179,12 @@ function create(maze) {
 
 	// --- PHYSICS ---
 
-	const doorDefinition = {
+	const closedDoorDefinition = {
 		type: 'static',
-		position: {x: doorX, y: doorZ}
+		position: {x: doorX, y: doorZ},
+		userData: 'closed_door',
 	};
-	gDoorBody = global.physicsWorld.createBody(doorDefinition);
+	gDoorBody = global.physicsWorld.createBody(closedDoorDefinition);
 	gDoorBody.createFixture({shape: doorShape});
 
 	// --- 3D ---
@@ -254,11 +257,12 @@ function collect() {
 	}
 
 	// create open door physics body
-	const doorDefinition = {
+	const openDoorDefinition = {
 		type: 'static',
-		position: {x: doorX, y: doorZ}
+		position: {x: doorX, y: doorZ},
+		userData: 'open_door',
 	};
-	gDoorBody = global.physicsWorld.createBody(doorDefinition);
+	gDoorBody = global.physicsWorld.createBody(openDoorDefinition);
 	gDoorBody.createFixture({shape: doorShape});
 
 	// move door mesh to open position
