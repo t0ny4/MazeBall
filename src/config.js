@@ -26,7 +26,7 @@ const config = {
 	doorModelFile:		'ArchDoor.glb',
 	/** @type {Object.<string, string | SoundInfo>} */
 	keySounds:			{
-		keyPickup:	'DM-CGS-03.ogg',
+		keyPickup:	{filename: 'DM-CGS-07.ogg', volume: 0.4},
 	},
 	/** @type {Object.<string, string[]>} */
 	keySoundGroups: {
@@ -51,6 +51,7 @@ const config = {
 		locked: {filename: 'DM-CGS-10.ogg', volume: 0.3},
 		dm12:   {filename: 'DM-CGS-12.ogg', volume: 0.25},
 		dm26:   {filename: 'DM-CGS-26.ogg', volume: 0.4},
+		wallhit: {filename: 'DM-CGS-03.ogg', volume: 0.05},
 	},
 	/** @type {Object.<string, string[]>} */
 	mazeSoundGroups: {

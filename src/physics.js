@@ -41,7 +41,7 @@ function setup() {
 		}
 		contact.last = now;
 
-		contact.callback();
+		contact.callback(c);
 	});
 }
 

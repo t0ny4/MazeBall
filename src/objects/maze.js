@@ -42,6 +42,22 @@ function setup() {
 	gScene.add(gExitLight);
 	global.exitLight = gExitLight;
 	gCurrentMaze = {size: {x: 0, z: 0}};
+	global.physicsWorld.addContactCallback(
+		'ball',
+		'wall',
+		/** @param {planck.Contact} c */
+		(c) => {
+			const loc = c.getManifold().localNormal;
+			const vel = c.getFixtureB().getBody().getLinearVelocity();
+
+			const x = Math.abs(vel.x * loc.x);
+			const y = Math.abs(vel.y * loc.y);
+
+			if (x > 0.9 || y > 0.9) {
+				sounds.play('wallhit');
+			}
+		}
+	);
 }
 
 
