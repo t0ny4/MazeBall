@@ -46,9 +46,23 @@ const handler = {
 		if (prop in target) {
 			return target[prop];
 		}
-		throw new Error('Global has no property named ' + prop);
+		console.error('Cannot read non existent property "' + prop + '" from global');
+		throw new Error();
+	},
+	set(target, prop, value) {
+		if (prop in target) {
+			target[prop] = value;
+			return true;
+		}
+		console.error('Cannot create new property "' + prop + '" on global');
+		throw new Error();
+	},
+	deleteProperty(_, prop) {
+		console.error('Cannot delete property "' + prop + '" from global');
+		throw new Error();
 	}
 };
+
 
 /**
  * The seal() and Proxy ensure that only existing properties of the object can be used

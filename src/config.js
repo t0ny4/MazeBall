@@ -98,12 +98,19 @@ const handler = {
 		if (prop in target) {
 			return target[prop];
 		}
-		throw new Error('Config has no property named ' + prop);
+		console.error('Cannot read non existent property "' + prop + '" from config');
+		throw new Error();
 	},
 	set(_, prop) {
-		throw new Error('Config is read only, attempted to write to property named ' + prop);
+		console.error('Cannot write to property "' + prop + '" on config');
+		throw new Error();
+	},
+	deleteProperty(_, prop) {
+		console.error('Cannot delete property "' + prop + '" from config');
+		throw new Error();
 	}
 };
+
 
 /**
  * freeze() and Proxy ensure that only existing properties of the object can be used
