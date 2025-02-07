@@ -17,6 +17,9 @@ import * as firstPerson from './src/first_person';
 import * as sounds from './src/sounds';
 
 
+global.statusBar = document.getElementById('statusBar');
+const statusHeight = (global.statusBar === null) ? 0 : global.statusBar.clientHeight;
+
 // override javascript builtin prng with alea, using seed if configured
 Math.random = !config.randomSeed ? aleaPRNG() : aleaPRNG(config.randomSeed);
 
@@ -37,12 +40,20 @@ let gLevel = 1;
 let gGameState = GameStates.init;
 
 document.addEventListener('DOMContentLoaded', () => {
+	setStatus('Loading...');
 	loadAssets(
 		// sounds must come last
 		[player, maze, key, sounds],
 		setup
 	);
 });
+
+
+function setStatus(...messages) {
+	if (global.statusBar) {
+		global.statusBar.innerHTML = messages.join(' ');
+	}
+}
 
 
 /**
@@ -62,9 +73,9 @@ function loadAssets(objs, callback) {
 		hadErrors = true;
 	};
 
-	// manager.onProgress = function(url, itemsLoaded, itemsTotal) {
-	//	console.log('Loading asset file: ' + url + ' [' + itemsLoaded + ' of ' + itemsTotal + ']');
-	// };
+	manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+		setStatus('Loaded', Math.floor(itemsLoaded / itemsTotal * 100) + '%');
+	};
 
 	manager.onLoad = () => {
 		if (!initDone) {
@@ -73,6 +84,7 @@ function loadAssets(objs, callback) {
 		if (hadErrors) {
 			console.error('LoadingManager: finished loading asset files with errors');
 		}
+		setStatus('');
 		callback();
 	};
 
@@ -91,7 +103,7 @@ function loadAssets(objs, callback) {
 function setup() {
 	// physics & render must come first (in either order)
 	physics.setup();
-	render.setup();
+	render.setup(window.innerWidth, window.innerHeight - statusHeight);
 	// next comes maze
 	maze.setup();
 	// the rest of the setup functions come next in any order
@@ -114,6 +126,7 @@ function game_loop() {
 	switch (gGameState) {
 
 		case GameStates.init: {
+			setStatus('Level:', gLevel);
 			const mazeSeed = Math.random().toString().substring(2);
 			const dimension = 5 + (gLevel * 2);
 			const mazeData = generateMazeData(dimension, dimension, mazeSeed);

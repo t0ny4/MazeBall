@@ -1,6 +1,6 @@
 # Maze Ball
 
-A modern, partial re-implementation of Astray [[https://github.com/wwwtyro/Astray](https://github.com/wwwtyro/Astray)] with a couple of extra features.
+A modern re-implementation of Astray [[https://github.com/wwwtyro/Astray](https://github.com/wwwtyro/Astray)] with a couple of extra features.
 
 ---
 

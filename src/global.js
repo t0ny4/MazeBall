@@ -38,6 +38,8 @@ const global = {
 	errorTexture: null,
 	/** @type {THREE.Mesh} */
 	errorMesh: null,
+	/** @type {HTMLElement} */
+	statusBar: null,
 };
 
 

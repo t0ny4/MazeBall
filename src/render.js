@@ -10,9 +10,11 @@ let gSunLight;
 
 
 /**
+ * @param {Number} width
+ * @param {Number} height
  * @param {HTMLElement} el - default: document.body
  */
-function setup(el = document.body) {
+function setup(width, height, el = document.body) {
 
 	global.renderUpdate = update;
 	global.cameraYpos = config.defaultCameraY;
@@ -26,7 +28,7 @@ function setup(el = document.body) {
 	el.appendChild(global.renderer.domElement);
 
 	global.renderer.setPixelRatio(window.devicePixelRatio);
-	global.renderer.setSize(window.innerWidth, window.innerHeight);
+	global.renderer.setSize(width, height);
 
 	window.addEventListener('resize', onWindowResize);
 
