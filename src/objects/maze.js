@@ -7,6 +7,7 @@ import global from '../global';
 import config from '../config';
 import * as key from './key';
 import * as sounds from '../sounds';
+import { addImpact } from '../status';
 
 
 const HALF_PI = Math.PI / 2;
@@ -55,6 +56,7 @@ function setup() {
 
 			if (x > 0.9 || y > 0.9) {
 				sounds.play('wallhit');
+				addImpact();			// status
 			}
 		}
 	);

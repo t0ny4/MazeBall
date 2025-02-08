@@ -17,6 +17,7 @@ import * as debug from './src/debug';
 import * as firstPerson from './src/first_person';
 import * as sounds from './src/sounds';
 
+
 // override javascript builtin prng with alea, using seed if configured
 Math.random = !config.randomSeed ? aleaPRNG() : aleaPRNG(config.randomSeed);
 
@@ -39,7 +40,7 @@ let gStatusHeight = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
 	gStatusHeight = status.setup();
-	status.update('Loading...');
+	status.message('Loading...');
 	loadAssets(
 		// sounds must come last
 		[player, maze, key, sounds],
@@ -74,7 +75,7 @@ function game_loop() {
 	switch (gGameState) {
 
 		case GameStates.init: {
-			status.update('Level:', gLevel);
+			status.setLevel(gLevel);
 			const mazeSeed = Math.random().toString().substring(2);
 			const dimension = 5 + (gLevel * 2);
 			const mazeData = generateMazeData(dimension, dimension, mazeSeed);

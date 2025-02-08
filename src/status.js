@@ -4,6 +4,10 @@
 let gStatusBar = null;
 /** @type {Number} */
 let gStatusHeight = 0;
+/** @type {Number} */
+let gLevel = 0;
+/** @type {Number} */
+let gImpacts = 0;
 
 
 /**
@@ -19,10 +23,30 @@ function setup() {
 }
 
 
-function update(...messages) {
+function message(...messages) {
 	if (gStatusBar) {
 		gStatusBar.innerHTML = messages.join(' ');
 	}
+}
+
+
+function setLevel(lvl) {
+	if (lvl !== gLevel) {
+		gLevel = lvl;
+		gImpacts = 0;
+		refresh();
+	}
+}
+
+function addImpact() {
+	gImpacts++;
+	refresh();
+}
+
+
+function refresh() {
+	// @TODO: make this look better
+	gStatusBar.innerHTML = 'Level: ' + gLevel + ' &nbsp; Wall Impacts: ' + gImpacts;
 }
 
 
@@ -32,5 +56,7 @@ const _MODULE = 'status.js';
 export {
 	_MODULE,
 	setup,
-	update,
+	message,
+	setLevel,
+	addImpact,
 };

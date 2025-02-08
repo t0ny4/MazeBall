@@ -6,7 +6,7 @@ import global from './global';
 
 /** @type {planck.World} */
 let gWorld;
-/**  @type {Object.<string, Object.<string, {callback: Function, last: Number}>} */
+/**  @type {Object.<string, Object.<string, {callback: Function | Function[], last: Number}>} */
 const gContacts = {};
 
 
@@ -41,7 +41,13 @@ function setup() {
 		}
 		contact.last = now;
 
-		contact.callback(c);
+		if (typeof contact.callback === 'function') {
+			contact.callback(c);
+			return;
+		}
+
+		// not a function? must be an array
+		contact.callback.forEach((cb) => { cb(c); });
 	});
 }
 
@@ -59,10 +65,17 @@ function addContactCallback(srcObjName, targetObjName, callback) {
 
 	if (!gContacts[srcObjName][targetObjName]) {
 		gContacts[srcObjName][targetObjName] = {};
+		gContacts[srcObjName][targetObjName].last = 0;
+		gContacts[srcObjName][targetObjName].callback = callback;
+		return;
 	}
 
-	gContacts[srcObjName][targetObjName].callback = callback;
-	gContacts[srcObjName][targetObjName].last = 0;
+	if (typeof gContacts[srcObjName][targetObjName].callback === 'function') {
+		const oldCallback = gContacts[srcObjName][targetObjName].callback;
+		gContacts[srcObjName][targetObjName].callback = [oldCallback];
+	}
+
+	gContacts[srcObjName][targetObjName].callback.push(callback);
 }
 
 

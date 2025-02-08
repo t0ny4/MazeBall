@@ -2,7 +2,7 @@
 
 import './types';
 import * as THREE from 'three';
-import {update as statusUpdate} from './status';
+import {message as statusMessage} from './status';
 
 
 /**
@@ -55,7 +55,7 @@ function loadAssets(objs, callback) {
 	};
 
 	manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-		statusUpdate('Loaded', Math.floor(itemsLoaded / itemsTotal * 100) + '%');
+		statusMessage('Loaded', Math.floor(itemsLoaded / itemsTotal * 100) + '%');
 	};
 
 	manager.onLoad = () => {
@@ -65,7 +65,7 @@ function loadAssets(objs, callback) {
 		if (hadErrors) {
 			console.error('LoadingManager: finished loading asset files with errors');
 		}
-		statusUpdate('');
+		statusMessage('');
 		callback();
 	};
 
