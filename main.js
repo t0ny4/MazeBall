@@ -1,20 +1,19 @@
 /* SPDX-License-Identifier: 0BSD */
 
-import './src/types';
 import aleaPRNG from './src/aleaPRNG';
 import global from './src/global';
 import config from './src/config';
 import { loadAssets, makeErrorMesh, makeErrorTexture } from './src/utils';
 import { generateMazeData } from './src/mazegen';
-import { bindControlKeys } from './src/controls';
 import * as status from './src/status';
 import * as physics from './src/physics';
 import * as render from './src/render';
-import * as maze from './src/objects/maze';
-import * as key from './src/objects/key';
-import * as player from './src/player';
+import * as controls from './src/controls';
 import * as debug from './src/debug';
 import * as firstPerson from './src/first_person';
+import * as key from './src/objects/key';
+import * as maze from './src/objects/maze';
+import * as player from './src/player';
 import * as sounds from './src/sounds';
 
 
@@ -49,20 +48,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+/**
+ * call the setup() method on all modules that require it, then initiate the game loop
+ */
 function setup() {
 	// physics & render must come first (in either order)
 	physics.setup();
 	render.setup(window.innerWidth, window.innerHeight - gStatusHeight);
-	// next comes maze
-	maze.setup();
-	// the rest of the setup functions come next in any order
-	player.setup(maze.updatePlayerPosition);
-	key.setup();
-	bindControlKeys();
+	// the rest of the setup methods can now be called in (almost) any order
+	// debug, firstPerson, key & sounds can be commented out to disable their functionality
+	controls.setup();
 	debug.setup();
 	firstPerson.setup();
+	maze.setup();
+	key.setup(); // cannot be called before maze.setup() [requires global.exitLight]
+	player.setup(maze.updatePlayerPosition);
 	sounds.setup();
-	// now everything is set up, start the game loop
+	// now everything is set up, initiate the game loop
 	requestAnimationFrame(game_loop);
 }
 

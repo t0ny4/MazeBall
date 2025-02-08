@@ -40,7 +40,9 @@ function setup() {
  * @returns {boolean} true if debug needs a render update
  */
 function update() {
-	gStats.update();
+	if (gStats) {
+		gStats.update();
+	}
 	if (global.orbitControlsEnabled) {
 		gControls.update();
 		return true;

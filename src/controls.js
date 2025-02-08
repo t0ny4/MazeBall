@@ -15,7 +15,10 @@ let gKeyX = 0;
 let gKeyY = 0;
 
 
-function bindControlKeys() {
+/**
+ * binds the control keys
+ */
+function setup() {
 	function down() { gKeyY += 1; }
 	function up() { gKeyY -= 1; }
 	function left() { gKeyX -= 1; }
@@ -67,7 +70,7 @@ const _MODULE = 'controls.js';
 
 export {
 	_MODULE,
-	bindControlKeys,
+	setup,
 	bindMouseMove,
 	gKeyX as keyX,
 	gKeyY as keyY,
