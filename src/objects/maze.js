@@ -34,6 +34,8 @@ let gWallMesh;
 let gFloorMesh;
 /** @type {MazeObject} */
 let gCurrentMaze;
+/** @type {Number} */
+let gSensitivity = 0.9;
 
 
 function setup() {
@@ -54,7 +56,7 @@ function setup() {
 			const x = Math.abs(vel.x * loc.x);
 			const y = Math.abs(vel.y * loc.y);
 
-			if (x > 0.9 || y > 0.9) {
+			if (x > gSensitivity || y > gSensitivity) {
 				sounds.play('wallhit');
 				addImpact();			// status
 			}
@@ -110,9 +112,10 @@ function loadAssets(manager) {
  * Sets camera position and rotation
  * @param {MazeObject} maze
  */
-function create(maze) {
+function create(maze, sensitivity = 0.9) {
 
 	gCurrentMaze = maze;
+	gSensitivity = sensitivity;
 
 	// --- PHYSICS ---
 
