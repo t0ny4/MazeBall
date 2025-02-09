@@ -29,6 +29,10 @@
  * @typedef {{filename: string, volume?: number}} SoundInfo
  */
 
+/**
+ * @typedef {function(number,number,number,number):void} updatePositionCallback
+ */
+
 /*
 	MazeObject.data is a 2D array representing the maze grid [x][z]
 	 Values from mazegen.js are:

@@ -8,6 +8,12 @@ let gStatusHeight = 0;
 let gLevel = 0;
 /** @type {Number} */
 let gImpacts = 0;
+/** @type {Number} */
+let gDistance = 0;
+/** @type {Number} */
+let gDistanceRound = 0;
+/** @type {Number} */
+let gLastDistance = 0;
 
 
 /**
@@ -34,9 +40,11 @@ function setLevel(lvl) {
 	if (lvl !== gLevel) {
 		gLevel = lvl;
 		gImpacts = 0;
+		gDistance = 0;
 		refresh();
 	}
 }
+
 
 function addImpact() {
 	gImpacts++;
@@ -44,9 +52,20 @@ function addImpact() {
 }
 
 
+function addDistance(d) {
+	gDistance += d;
+	gDistanceRound = Math.round(gDistance);
+	if (gDistanceRound !== gLastDistance) {
+		gLastDistance = gDistanceRound;
+		refresh();
+	}
+}
+
+
 function refresh() {
 	// @TODO: make this look better
-	gStatusBar.innerHTML = 'Level: ' + gLevel + ' &nbsp; Wall Impacts: ' + gImpacts;
+	gStatusBar.innerHTML = 'Level: ' + gLevel + ' &nbsp; Distance Rolled: ' +
+		gDistanceRound + ' &nbsp; Wall Impacts: ' + gImpacts;
 }
 
 
@@ -59,4 +78,5 @@ export {
 	message,
 	setLevel,
 	addImpact,
+	addDistance,
 };

@@ -35,7 +35,7 @@ function loadAssets(manager) {
 }
 
 /**
- * @param {function(number,number,number):void} updatePositionFunc
+ * @param {updatePositionCallback} updatePositionFunc
  */
 function setup(updatePositionFunc) {
 
@@ -142,7 +142,7 @@ function setPositionXZ(x, z) {
 	gPlayerPhysicsObject.setPosition({x, y: z});
 
 	// tell maze about new position
-	gUpdateMazePosition(x, pos.y, z);
+	gUpdateMazePosition(x, pos.y, z, 0);
 }
 
 

@@ -7,7 +7,7 @@ import global from '../global';
 import config from '../config';
 import * as key from './key';
 import * as sounds from '../sounds';
-import { addImpact } from '../status';
+import { addImpact, addDistance } from '../status';
 
 
 const HALF_PI = Math.PI / 2;
@@ -228,12 +228,15 @@ function mazeMesh(maze) {
  * @param {number} x
  * @param {number} y
  * @param {number} z
+ * @param {number} delta
  */
-function updatePlayerPosition(x, y, z) {
+function updatePlayerPosition(x, y, z, delta) {
 
 	gPlayerPos.x = x;
 	gPlayerPos.y = y;
 	gPlayerPos.z = z;
+
+	addDistance(delta);	// status
 
 	const gridX = Math.floor(x + 0.5);
 	const gridZ = Math.floor(z + 0.5);

@@ -11,6 +11,7 @@ const gAxisMatrix = new THREE.Matrix4();
 const gBallRadius = config.ballRadius;
 const gMinVelocity = config.minVelocity;
 
+
 /** @type {THREE.Mesh} */
 let gBallMesh;
 /** @type {planck.Body} */
@@ -43,7 +44,7 @@ function loadAssets(manager) {
 
 
 /**
- * @param {function(number,number,number):void} updatePositionFunc
+ * @param {updatePositionCallback} updatePositionFunc
  * @returns {[planck.Body, THREE.Mesh]}
  */
 function setup(updatePositionFunc) {
@@ -115,11 +116,14 @@ function update() {
 	const distanceZ = physBallPosZ - gBallMesh.position.z;
 
 	if (distanceX !== 0 || distanceZ !== 0) {
+
 		// update 3D ball position to match physics ball
 		gBallMesh.position.set(physBallPos.x, gBallRadius, physBallPosZ);
 
+		const distance = Math.sqrt((distanceX * distanceX) + (distanceZ * distanceZ));
+
 		// tell maze about new position
-		gUpdateMazePosition(physBallPos.x, gBallRadius, physBallPosZ);
+		gUpdateMazePosition(physBallPos.x, gBallRadius, physBallPosZ, distance);
 
 		// no need to calculate rotation in 1st person mode, as ball can't be seen
 		if (!global.firstPersonModeActive) {
