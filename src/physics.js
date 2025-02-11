@@ -21,18 +21,21 @@ function setup() {
 
 	gWorld.on('begin-contact', (c) => {
 
-		const objectA = c.m_nodeA.other.m_userData;
-		const objectB = c.m_nodeB.other.m_userData;
+		const userDataA = c.m_nodeA.other.m_userData;
+		const userDataB = c.m_nodeB.other.m_userData;
 
-		if (objectA === undefined || objectB === undefined) {
+		if (userDataA === undefined || userDataB === undefined) {
 			return;
 		}
 
-		if (!gContacts[objectA] || !gContacts[objectA][objectB]) {
+		const nameA = (typeof userDataA === 'object') ? userDataA.name : userDataA;
+		const nameB = (typeof userDataB === 'object') ? userDataB.name : userDataB;
+
+		if (!gContacts[nameA] || !gContacts[nameA][nameB]) {
 			return;
 		}
 
-		const contact = gContacts[objectA][objectB];
+		const contact = gContacts[nameA][nameB];
 
 		// debounce
 		const now = performance.now();
@@ -42,12 +45,12 @@ function setup() {
 		contact.last = now;
 
 		if (typeof contact.callback === 'function') {
-			contact.callback(c);
+			contact.callback(c, userDataA, userDataB);
 			return;
 		}
 
 		// not a function? must be an array
-		contact.callback.forEach((cb) => { cb(c); });
+		contact.callback.forEach((cb) => { cb(c, userDataA, userDataB); });
 	});
 }
 
