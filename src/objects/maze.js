@@ -18,6 +18,8 @@ const gWallTextures = [];
 const gFloorTextures = [];
 /** @type {planck.Body[]} */
 const gMazePhysicsBodies = [];
+/** @type {TypeChangeInfo[]} */
+const gOnTypeChangeCallbacks = [];
 
 const gPlayerPos = {x: 0, y: 0, z: 0};
 const gPlayerGridInfo = {x: 0, z: 0, type: ''};
@@ -84,7 +86,6 @@ function loadAssets(manager) {
 				gWallTextures.push(global.errorTexture);
 			}
 		);
-
 	}
 
 	for (const file of config.floorTextureFiles) {
@@ -244,10 +245,10 @@ function updatePlayerPosition(x, y, z, delta) {
 	const gridX = Math.floor(x + 0.5);
 	const gridZ = Math.floor(z + 0.5);
 
-	const oldGridX = gPlayerGridInfo.x;
-	const oldGridZ = gPlayerGridInfo.z;
+	const oldGridPos = {x: gPlayerGridInfo.x, z: gPlayerGridInfo.z};
+	const newGridPos = {x, z};
 
-	if (gridX === oldGridX && gridZ === oldGridZ) {
+	if (gridX === oldGridPos.x && gridZ === oldGridPos.z) {
 		// grid square has not changed
 		return;
 	}
@@ -269,12 +270,28 @@ function updatePlayerPosition(x, y, z, delta) {
 		return;
 	}
 
-	// @TODO: onTypeChange callbacks
-
 	if (gPlayerGridInfo.type === 'K') {
 		key.collect();
 		gCurrentMaze.data[gPlayerGridInfo.x][gPlayerGridInfo.z] = 'D';
 	}
+
+	gOnTypeChangeCallbacks.forEach((el) => {
+		if ((el.from === null || el.from === oldGridType) &&
+			(el.to === null || el.to === gPlayerGridInfo.type))
+		{
+			el.callback(oldGridType, gPlayerGridInfo.type, oldGridPos, newGridPos);
+		}
+	});
+}
+
+
+/**
+ * @param {OnTypeChange} callback
+ * @param {String|null} to
+ * @param {String|null} from
+ */
+function registerOnTypeChange(callback, to = null, from = null) {
+	gOnTypeChangeCallbacks.push({from, to, callback});
 }
 
 
@@ -297,4 +314,5 @@ export {
 	create,
 	updatePlayerPosition,
 	getPlayerGridInfo,
+	registerOnTypeChange,
 };

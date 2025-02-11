@@ -33,6 +33,31 @@
  * @typedef {function(number,number,number,number):void} updatePositionCallback
  */
 
+/**
+ * @typedef {{x: number, z: number}} GridPosition
+ */
+
+/**
+ * @callback RegisterOnTypeChange
+ * @param {Function} callback
+ * @param {String|null} to
+ * @param {String|null} from
+ * @returns {void}
+ */
+
+/**
+ * @callback OnGridChange
+ * @param {String} oldType
+ * @param {String} newType
+ * @param {GridPosition} oldGridPos
+ * @param {GridPosition} newGridPos
+ */
+
+/**
+ * @typedef {{from: string|null, to: string|null, callback: OnGridChange}} TypeChangeInfo
+ */
+
+
 /*
 	MazeObject.data is a 2D array representing the maze grid [x][z]
 	 Values from mazegen.js are:
