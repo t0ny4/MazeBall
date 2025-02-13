@@ -19,7 +19,12 @@ let gPlayerLight;
 let gAngle = 0;
 /** @type {function(number,number,number):void} */
 let gUpdateMazePosition = () => { console.warn('gUpdateMazePosition not set'); };
-
+/** @type {{x: number, z: number} | null} */
+let gDeferredPosition = null;
+/** @type {planck.Vec2Value | null} */
+let gDeferredVelocity = null;
+/** @type {Number | null} */
+let gDeferredAngle = null;
 
 const gZeroZero = new planck.Vec2(0, 0);
 const QUARTER_PI = Math.PI / 4;
@@ -33,6 +38,7 @@ const COS45 = Math.cos(QUARTER_PI);
 function loadAssets(manager) {
 	actor.loadAssets(manager);
 }
+
 
 /**
  * @param {updatePositionCallback} updatePositionFunc
@@ -58,6 +64,23 @@ function setup(updatePositionFunc) {
  * @returns {Boolean} true if the player is moving
  */
 function update() {
+
+	if (gDeferredPosition !== null) {
+		setPositionXZ(gDeferredPosition.x, gDeferredPosition.z);
+		gDeferredPosition = null;
+		if (gDeferredVelocity !== null) {
+			setLinearVelocity(gDeferredVelocity);
+			gDeferredVelocity = null;
+		}
+		if (gDeferredAngle !== null) {
+			if (global.firstPersonModeActive) {
+				const newAngle = getAngle() + gDeferredAngle;
+				global.camera.rotation.set(0, -newAngle, 0);
+				setAngle(newAngle);
+			}
+			gDeferredAngle = null;
+		}
+	}
 
 	// if either movement key is pressed, apply the relevant force
 	if (keyX !== 0 || keyY !== 0) {
@@ -117,6 +140,11 @@ function setLinearVelocity(v) {
 }
 
 
+function getLinearVelocity() {
+	return gPlayerPhysicsObject.getLinearVelocity();
+}
+
+
 /**
  * move the player to the start of the new maze,
  * set 1st person rotation to maze start angle,
@@ -143,6 +171,19 @@ function setPositionXZ(x, z) {
 
 	// tell maze about new position
 	gUpdateMazePosition(x, pos.y, z, 0);
+}
+
+
+/**
+ * Set a position/velocity update to happen on the next player.update()
+ * @param {{x: number, z: number}} position
+ * @param {planck.Vec2Value | null} velocity
+ * @param {Number} angle
+ */
+function deferredPositionUpdate(position, velocity = null, angle = null) {
+	gDeferredPosition = position;
+	gDeferredVelocity = velocity;
+	gDeferredAngle = angle;
 }
 
 
@@ -199,4 +240,6 @@ export {
 	setNewMaze,
 	setup,
 	update,
+	getLinearVelocity,
+	deferredPositionUpdate,
 };
