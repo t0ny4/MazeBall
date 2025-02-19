@@ -30,7 +30,7 @@ function setup() {
 
 	setKeyHandler('first_person', toggleFirstPerson);
 
-	addEventListener('pointerlockchange', () => {
+	document.addEventListener('pointerlockchange', () => {
 		if (global.orbitControlsEnabled) {
 			if (document.pointerLockElement) {
 				console.log('Cannot switch to first person view while orbit controls are active');
