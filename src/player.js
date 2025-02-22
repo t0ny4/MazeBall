@@ -24,7 +24,9 @@ let gDeferredPosition = null;
 /** @type {planck.Vec2Value | null} */
 let gDeferredVelocity = null;
 /** @type {Number | null} */
-let gDeferredAngle = null;
+let gDeferredRotation = null;
+/** @type {THREE.Euler} */
+const gCameraEuler = new THREE.Euler(0, 0, 0, 'YZX');
 
 const gZeroZero = new planck.Vec2(0, 0);
 const QUARTER_PI = Math.PI / 4;
@@ -72,13 +74,14 @@ function update() {
 			setLinearVelocity(gDeferredVelocity);
 			gDeferredVelocity = null;
 		}
-		if (gDeferredAngle !== null) {
+		if (gDeferredRotation !== null) {
 			if (global.firstPersonModeActive) {
-				const newAngle = getAngle() + gDeferredAngle;
-				global.camera.rotation.set(0, -newAngle, 0);
-				setAngle(newAngle);
+				gCameraEuler.setFromQuaternion(global.camera.quaternion);
+				gCameraEuler.y -= gDeferredRotation;
+				global.camera.quaternion.setFromEuler(gCameraEuler);
+				gAngle += gDeferredRotation;
 			}
-			gDeferredAngle = null;
+			gDeferredRotation = null;
 		}
 	}
 
@@ -178,12 +181,12 @@ function setPositionXZ(x, z) {
  * Set a position/velocity update to happen on the next player.update()
  * @param {{x: number, z: number}} position
  * @param {planck.Vec2Value | null} velocity
- * @param {Number} angle
+ * @param {Number | null} angle
  */
 function deferredPositionUpdate(position, velocity = null, angle = null) {
 	gDeferredPosition = position;
 	gDeferredVelocity = velocity;
-	gDeferredAngle = angle;
+	gDeferredRotation = angle;
 }
 
 
