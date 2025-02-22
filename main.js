@@ -103,6 +103,7 @@ function game_loop() {
 			// change from false to true
 			renderRequired |= firstPerson.update();
 			renderRequired |= key.update();
+			renderRequired |= maze.update();
 			// check to see if we are outside the maze
 			const p = maze.getPlayerGridInfo();
 			if (p.type === 'O') {

@@ -118,6 +118,8 @@ function create(maze, sensitivity = 0.9) {
 	gCurrentMaze = maze;
 	gSensitivity = sensitivity;
 
+	const wallTextureIdx = Math.floor(Math.random() * gWallTextures.length);
+
 	// --- PHYSICS ---
 
 	// clear the old maze from the physics world, if one exists
@@ -166,7 +168,7 @@ function create(maze, sensitivity = 0.9) {
 		gFloorMesh = null;
 	}
 
-	gWallMesh = mazeMesh(maze);
+	gWallMesh = mazeMesh(maze, wallTextureIdx);
 	gWallMesh.castShadow = true;
 	gWallMesh.receiveShadow = true;
 	gScene.add(gWallMesh);
@@ -202,13 +204,13 @@ function create(maze, sensitivity = 0.9) {
 
 /**
  * @param {MazeObject} maze
+ * @param {Number} textureIdx
  * @returns {THREE.InstancedMesh}
  */
-function mazeMesh(maze) {
+function mazeMesh(maze, textureIdx) {
 
 	const cube_geo = new THREE.BoxGeometry(1, config.mazeHeight, 1);
-	const rnd = Math.floor(Math.random() * gWallTextures.length);
-	const map = gWallTextures[rnd];
+	const map = gWallTextures[textureIdx];
 	const material = new THREE.MeshPhongMaterial({map});
 	const mesh = new THREE.InstancedMesh(cube_geo, material, maze.size.x * maze.size.z);
 	mesh.count = 0;
@@ -304,6 +306,11 @@ function getPlayerGridInfo() {
 }
 
 
+function update() {
+	return false;
+}
+
+
 const _MODULE = 'maze.js';
 
 
@@ -315,4 +322,5 @@ export {
 	updatePlayerPosition,
 	getPlayerGridInfo,
 	registerOnTypeChange,
+	update,
 };
