@@ -40,9 +40,9 @@ function makeErrorMesh() {
 /**
  * Calls the supplied function when all game assets are loaded
  * @param {Object[]} objs array of Objects with a loadAssets() method
- * @param {Function} callback called when all asset loading is finished
+ * @param {Function} resolve callback to resolve a Promise
  */
-function loadAssets(objs, callback) {
+function loadAssets(objs, resolve) {
 
 	let initDone = false;
 	let hadErrors = false;
@@ -66,7 +66,7 @@ function loadAssets(objs, callback) {
 			console.error('LoadingManager: finished loading asset files with errors');
 		}
 		statusMessage('');
-		callback();
+		resolve();
 	};
 
 	objs.forEach((obj) => {

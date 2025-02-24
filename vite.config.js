@@ -11,7 +11,7 @@ export default {
 				}
 			}
 		},
-		
+    	target: 'esnext',	
 	},
 	appType: 'mpa', // enable 404 for missing files
 }

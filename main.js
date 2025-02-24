@@ -37,15 +37,23 @@ let gLevel = 1;
 let gGameState = GameStates.init;
 let gStatusHeight = 0;
 
+// calling setup() from within THREE.LoadingManager's onLoad() causes problems with
+// error handling, so let onLoad() resolve a Promise and await on the Promise instead.
+const {promise, resolve} = Promise.withResolvers();
+
 document.addEventListener('DOMContentLoaded', () => {
 	gStatusHeight = status.setup();
 	status.message('Loading...');
 	loadAssets(
 		// sounds must come last
 		[player, maze, key, sounds],
-		setup
+		resolve
 	);
 });
+
+// wait here until loadAssets() has completed
+await promise;
+setup();
 
 
 /**
