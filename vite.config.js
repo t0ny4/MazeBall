@@ -13,7 +13,7 @@ export default {
 			}
 		},
     	target: 'esnext',
-    	chunkSizeWarningLimit: '533K', // this is how big three.js r173 is
+    	chunkSizeWarningLimit: '533K', // this is how big three.js r174 is
 	},
 	appType: 'mpa', // enable 404 for missing files
 }
