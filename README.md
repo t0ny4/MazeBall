@@ -20,6 +20,7 @@ A modern re-implementation of Astray [[https://github.com/wwwtyro/Astray](https:
 - Key by Quaternius [[https://poly.pizza/m/bg6e1lfNsO](https://poly.pizza/m/bg6e1lfNsO)]
 - Teleporter base by Quaternius  [[https://poly.pizza/m/OIezStCmak](https://poly.pizza/m/OIezStCmak)]
 - Arch Door by Quaternius  [[https://poly.pizza/m/MVVMLXOfg1](https://poly.pizza/m/MVVMLXOfg1)]
+- Arch Round by Quaternius  [[https://poly.pizza/m/B9QABewqLv](https://poly.pizza/m/B9QABewqLv)]
 
 ## Sounds
 - "Free casual game sounds" by Dustyroom game studio [[https://dustyroom.com/free-casual-game-sounds/](https://dustyroom.com/free-casual-game-sounds/)]

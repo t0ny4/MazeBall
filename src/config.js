@@ -59,6 +59,14 @@ const config = {
 	},
 
 
+	// objects/teleporters.js
+	teleportModelFile: 'ArchRound.glb',
+	/** @type {Object.<string, string | SoundInfo>} */
+	teleportSounds: {
+		teleport: {filename: 'DM-CGS-42.ogg', volume: 0.1},
+	},
+
+
 	// controls.js
 	controlKeys: {
 		up:		['ArrowUp',		'w', 'k'],

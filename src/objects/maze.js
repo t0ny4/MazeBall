@@ -8,6 +8,7 @@ import config from '../config';
 import * as key from './key';
 import * as sounds from '../sounds';
 import { addImpact, addDistance } from '../status';
+import * as teleporters from './teleporters';
 
 
 const HALF_PI = Math.PI / 2;
@@ -64,6 +65,7 @@ function setup() {
 			}
 		}
 	);
+	teleporters.setup();
 }
 
 
@@ -104,6 +106,8 @@ function loadAssets(manager) {
 
 	sounds.addAssets(config.mazeSounds);
 	sounds.addGroups(config.mazeSoundGroups);
+
+	teleporters.loadAssets(manager);
 }
 
 
@@ -119,6 +123,8 @@ function create(maze, sensitivity = 0.9) {
 	gSensitivity = sensitivity;
 
 	const wallTextureIdx = Math.floor(Math.random() * gWallTextures.length);
+
+	teleporters.add(maze, gWallTextures[wallTextureIdx]);
 
 	// --- PHYSICS ---
 
@@ -307,7 +313,7 @@ function getPlayerGridInfo() {
 
 
 function update() {
-	return false;
+	return teleporters.update();
 }
 
 

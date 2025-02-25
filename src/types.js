@@ -57,6 +57,22 @@
  * @typedef {{from: string|null, to: string|null, callback: OnGridChange}} TypeChangeInfo
  */
 
+/**
+ * @typedef {{
+ *  target: Number,
+*   exit: GridPosition,
+*   cameraRotation: Number,
+ *  position: GridPosition,
+ *  meshGroup: THREE.Group,
+ *  triggerBody: planck.Body,
+ *  rearBoxBody: planck.Body,
+ *  active: Boolean,
+ * }} Teleporter
+ */
+
+/**
+ * @typedef {{name: 'teleporter', id: Number}} TpUserData
+ */
 
 /*
 	MazeObject.data is a 2D array representing the maze grid [x][z]

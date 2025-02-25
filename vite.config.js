@@ -5,13 +5,15 @@ export default {
 		rollupOptions: {
 			output: {
 				manualChunks: {
-					three: ['three', 'three/addons'],
+					three: ['three'],
+					threeaddons: ['three/addons'],
 					keystrokes: ['@rwh/keystrokes'],
 					planck: ['planck'],
 				}
 			}
 		},
-    	target: 'esnext',	
+    	target: 'esnext',
+    	chunkSizeWarningLimit: '533K', // this is how big three.js r173 is
 	},
 	appType: 'mpa', // enable 404 for missing files
 }
