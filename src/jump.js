@@ -22,6 +22,10 @@ let gInitialLightY = null;
 let gIsJumping = false;
 /** @type {Boolean} */
 let gFirstPersonAtStart = false;
+/** @type {THREE.Camera} */
+let gCamera;
+/** @type {THREE.PointLight} */
+let gPlayerLight;
 
 
 function loadAssets() {
@@ -34,26 +38,28 @@ function loadAssets() {
  */
 function setup(player) {
 
-	// this will always be the player's vertical position when not jumping
+	gCamera = global.camera;
+	gPlayerLight = global.playerLight;
 
+	// this will always be the player's vertical position when not jumping
 	gInitialPlayerY = player.position.y;
 
 	setKeyHandler('jump', () => {
 		if (!gIsJumping) {
 			gIsJumping = true;
+			gFirstPersonAtStart = global.firstPersonModeActive;
 			const mazeGrid = getPlayerGridInfo();
 			// limit jump height when under a teleporter arch
 			if (mazeGrid.type === 'T') {
 				gMaxJump = 0.5;
 			} else {
-				gMaxJump = (global.firstPersonModeActive) ? 1.2 : 0.6;
+				gMaxJump = (gFirstPersonAtStart) ? 1.2 : 0.6;
 			}
 			gJumpProgress = -1;
-			gFirstPersonAtStart = global.firstPersonModeActive;
 			if (gFirstPersonAtStart) {
-				gInitialCameraY = global.camera.position.y;
+				gInitialCameraY = gCamera.position.y;
 			}
-			gInitialLightY = global.playerLight.position.y;
+			gInitialLightY = gPlayerLight.position.y;
 			play('jump');
 		}
 	});
@@ -71,8 +77,10 @@ function update(player) {
 		return false;
 	}
 
+	const currentlyFirstPerson = global.firstPersonModeActive;
+
 	// abort if view mode switched mid-jump
-	if (global.firstPersonModeActive !== gFirstPersonAtStart) {
+	if (currentlyFirstPerson !== gFirstPersonAtStart) {
 		// mode switch will have changed camera, so forget saved position
 		gInitialCameraY = null;
 		reset(player);
@@ -91,11 +99,11 @@ function update(player) {
 	/** @type {Number} 0 to gMaxJump */
 	const deltaY = (gMaxJump * y);
 
-	if (global.firstPersonModeActive) {
-		global.camera.position.y = gInitialCameraY + deltaY;
+	if (currentlyFirstPerson) {
+		gCamera.position.y = gInitialCameraY + deltaY;
 	}
 	player.position.y = gInitialPlayerY + deltaY;
-	global.playerLight.position.y = gInitialLightY + deltaY;
+	gPlayerLight.position.y = gInitialLightY + deltaY;
 	return true;
 }
 
@@ -106,12 +114,12 @@ function update(player) {
 function reset(player) {
 	player.position.y = gInitialPlayerY;
 	if (gInitialLightY !== null) {
-		global.playerLight.position.y = gInitialLightY;
+		gPlayerLight.position.y = gInitialLightY;
 		gInitialLightY = null;
 	}
 	if (gInitialCameraY !== null) {
 		if (global.firstPersonModeActive) {
-			global.camera.position.y = gInitialCameraY;
+			gCamera.position.y = gInitialCameraY;
 		}
 		gInitialCameraY = null;
 	}

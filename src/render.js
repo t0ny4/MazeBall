@@ -6,7 +6,14 @@ import config from './config';
 import { getPosition as getPlayerPosition } from './player';
 
 
+/** @type {THREE.DirectionalLight} */
 let gSunLight;
+/** @type {THREE.Scene} */
+let gScene;
+/** @type {THREE.Camera} */
+let gCamera;
+/** @type {THREE.WebGLRenderer} */
+let gRenderer;
 
 
 /**
@@ -19,20 +26,23 @@ function setup(width, height, el = document.body) {
 	global.renderUpdate = update;
 	global.cameraYpos = config.defaultCameraY;
 
-	global.scene = new THREE.Scene();
-	global.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight);
-	global.renderer = new THREE.WebGLRenderer({antialias: true});
-	global.renderer.shadowMap.enabled = config.enableShadows;
-	global.renderer.shadowMap.type = THREE.PCFShadowMap;
+	gScene = new THREE.Scene();
+	global.scene = gScene;
+	gCamera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight);
+	global.camera = gCamera;
+	gRenderer = new THREE.WebGLRenderer({antialias: true});
+	global.renderer = gRenderer;
+	gRenderer.shadowMap.enabled = config.enableShadows;
+	gRenderer.shadowMap.type = THREE.PCFShadowMap;
 
-	el.appendChild(global.renderer.domElement);
+	el.appendChild(gRenderer.domElement);
 
-	global.renderer.setPixelRatio(window.devicePixelRatio);
-	global.renderer.setSize(width, height);
+	gRenderer.setPixelRatio(window.devicePixelRatio);
+	gRenderer.setSize(width, height);
 
 	window.addEventListener('resize', onWindowResize);
 
-	global.scene.background = new THREE.Color(config.bgColour);
+	gScene.background = new THREE.Color(config.bgColour);
 
 	gSunLight = new THREE.DirectionalLight(0xffffff, config.sunLightLevel);
 	gSunLight.castShadow = true;
@@ -43,13 +53,13 @@ function setup(width, height, el = document.body) {
 	gSunLight.shadow.camera.bottom = -20;
 	gSunLight.shadow.camera.near = 10;
 	gSunLight.shadow.camera.far = 25;
-	global.scene.add(gSunLight);
+	gScene.add(gSunLight);
 
 	global.fog = new THREE.Fog(config.bgColour, 5, 10);
-	global.scene.fog = global.fog;
+	gScene.fog = global.fog;
 
 	// const helper = new THREE.CameraHelper(gSunLight.shadow.camera);
-	// global.scene.add(helper);
+	// gScene.add(helper);
 }
 
 
@@ -69,13 +79,13 @@ function update(doUpdate = true) {
 
 		if (global.firstPersonModeActive) {
 			// in first person mode camera is locked to player position
-			global.camera.position.x = playerPos.x;
-			global.camera.position.z = playerPos.z;
+			gCamera.position.x = playerPos.x;
+			gCamera.position.z = playerPos.z;
 
 		} else {
 			// overhead view camera may be eased towards the player position
-			const xDiff = playerPos.x - global.camera.position.x;
-			const zDiff = playerPos.z - global.camera.position.z;
+			const xDiff = playerPos.x - gCamera.position.x;
+			const zDiff = playerPos.z - gCamera.position.z;
 
 			if (xDiff !== 0 || zDiff !== 0) {
 				// camera is still moving, need to do a renderer update
@@ -86,20 +96,20 @@ function update(doUpdate = true) {
 				// if no easing configured or position difference very small, move camera
 				// straight to player position
 				if (cameraEase >= 1 || (Math.abs(xDiff) < 0.008 && Math.abs(zDiff) < 0.008)) {
-					global.camera.position.x = playerPos.x;
-					global.camera.position.z = playerPos.z;
+					gCamera.position.x = playerPos.x;
+					gCamera.position.z = playerPos.z;
 				} else {
 					// ease camera towards player
-					global.camera.position.x += xDiff * cameraEase;
-					global.camera.position.z += zDiff * cameraEase;
+					gCamera.position.x += xDiff * cameraEase;
+					gCamera.position.z += zDiff * cameraEase;
 				}
 			}
 		}
 	}
 
 	if (doUpdate || cameraMoving) {
-		// console.log('render.update() calling global.renderer.render()');
-		global.renderer.render(global.scene, global.camera);
+		// console.log('render.update() calling gRenderer.render()');
+		gRenderer.render(gScene, gCamera);
 	}
 }
 
@@ -143,9 +153,9 @@ function fadeOut() {
 
 
 function onWindowResize() {
-	global.camera.aspect = window.innerWidth / window.innerHeight;
-	global.camera.updateProjectionMatrix();
-	global.renderer.setSize(window.innerWidth, window.innerHeight);
+	gCamera.aspect = window.innerWidth / window.innerHeight;
+	gCamera.updateProjectionMatrix();
+	gRenderer.setSize(window.innerWidth, window.innerHeight);
 	update();
 }
 

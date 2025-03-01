@@ -16,8 +16,8 @@ function setup() {
 		gravity: new planck.Vec2(0, 0),
 	});
 
+	gWorld.addContactCallback = addContactCallback;
 	global.physicsWorld = gWorld;
-	global.physicsWorld.addContactCallback = addContactCallback;
 
 	gWorld.on('begin-contact', (c) => {
 

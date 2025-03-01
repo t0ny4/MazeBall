@@ -9,13 +9,26 @@ import config from './config';
 import * as player from './player';
 
 
+/** @type {Boolean} */
 let gHouseLightsActive = false;
-let gControls, gHouseLights;
+/** @type {OrbitControls} */
+let gControls;
+/** @type {THREE.AmbientLight} */
+let gHouseLights;
+/** @type {Number} */
 let gCameraYpos;
+/** @type {Stats} */
 let gStats;
+/** @type {THREE.Camera} */
+let gCamera;
+/** @type {THREE.Scene} */
+let gScene;
 
 
 function setup() {
+
+	gCamera = global.camera;
+	gScene = global.scene;
 
 	gStats = new Stats();
 	document.body.appendChild(gStats.dom);
@@ -23,7 +36,7 @@ function setup() {
 	setKeyHandler('orbit_controls', keyHandlerControls);
 	setKeyHandler('house_lights', keyHandlerLight);
 
-	gControls = new OrbitControls(global.camera, global.renderer.domElement);
+	gControls = new OrbitControls(gCamera, global.renderer.domElement);
 	gControls.enableDamping = true;
 	gControls.enabled = false;
 	gControls.minPolarAngle = 0.02;
@@ -31,7 +44,7 @@ function setup() {
 
 	gHouseLights = new THREE.AmbientLight(0xcccccc, 1);
 	gHouseLights.intensity = 0;
-	global.scene.add(gHouseLights);
+	gScene.add(gHouseLights);
 }
 
 
@@ -43,7 +56,7 @@ function update() {
 	if (gStats) {
 		gStats.update();
 	}
-	if (global.orbitControlsEnabled) {
+	if (gControls.enabled) {
 		gControls.update();
 		return true;
 	}
@@ -58,24 +71,20 @@ function keyHandlerControls() {
 		return;
 	}
 
-	global.orbitControlsEnabled = !global.orbitControlsEnabled;
+	gControls.enabled = !gControls.enabled;
+	global.orbitControlsEnabled = gControls.enabled;
 
 	const playerPos = player.getPosition();
-	if (global.orbitControlsEnabled) {
+	if (gControls.enabled) {
 		console.log('Orbit controls enabled');
-		gCameraYpos = global.camera.position.y;
-
+		gCameraYpos = gCamera.position.y;
 		gControls.target.set(playerPos.x, playerPos.y, playerPos.z);
 	} else {
 		console.log('Orbit controls disabled');
-		global.camera.position.x = playerPos.x;
-		global.camera.position.y = gCameraYpos;
-		global.camera.position.z = playerPos.z;
-		global.camera.rotation.set(3 * Math.PI / 2, 0, 0);
+		gCamera.position.set(playerPos.x, gCameraYpos, playerPos.z);
+		gCamera.rotation.set(3 * Math.PI / 2, 0, 0);
 		global.renderUpdate();
 	}
-
-	gControls.enabled = global.orbitControlsEnabled;
 }
 
 
@@ -85,11 +94,11 @@ function keyHandlerLight() {
 
 	if (gHouseLightsActive) {
 		gHouseLights.intensity = 1.0;
-		global.scene.fog = null;
+		gScene.fog = null;
 		console.log('House lights up');
 	} else {
 		gHouseLights.intensity = 0;
-		global.scene.fog = global.fog;
+		gScene.fog = global.fog;
 		console.log('House lights down');
 	}
 
@@ -103,9 +112,9 @@ function keyHandlerLight() {
 function reset() {
 	if (gControls) {
 		gControls.target.set(
-			global.camera.position.x,
+			gCamera.position.x,
 			config.ballRadius,
-			global.camera.position.z
+			gCamera.position.z
 		);
 	}
 }

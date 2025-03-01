@@ -40,6 +40,10 @@ const gTeleporters = [];
 let gFrontPlaneMaterial;
 /** @type {ThreeMFLoader.ShaderMaterial} */
 let gBackPlaneMaterial;
+/** @type {planck.World} */
+let gPhysicsWorld;
+/** @type {THREE.Scene} */
+let gScene;
 
 
 /**
@@ -67,6 +71,8 @@ function loadAssets(manager) {
 
 function setup() {
 
+	gPhysicsWorld = global.physicsWorld;
+	gScene = global.scene;
 	gRearBoxMaterial = new THREE.MeshPhongMaterial();
 
 	const planeGeo = new THREE.PlaneGeometry(0.79, 1.08);
@@ -100,7 +106,7 @@ function setup() {
 	fixupRearBoxUVs(rearBoxGeo, 0.14);
 	gRearBoxMesh = new THREE.Mesh(rearBoxGeo, gRearBoxMaterial);
 
-	global.physicsWorld.addContactCallback('ball', 'teleporter', collision);
+	gPhysicsWorld.addContactCallback('ball', 'teleporter', collision);
 	gWasSetupCalled = true;
 }
 
@@ -175,7 +181,7 @@ function add(maze, texture) {
 	// add the teleporters to the 3D scene
 	gTeleporters.forEach((el) => {
 		if (el.active) {
-			global.scene.add(el.meshGroup);
+			gScene.add(el.meshGroup);
 		}
 	});
 }
@@ -186,14 +192,14 @@ function add(maze, texture) {
  */
 function removeExisting() {
 	gTeleporters.forEach((el) => {
-		global.scene.remove(el.meshGroup);
+		gScene.remove(el.meshGroup);
 		// destroyBody() implicitly destroys all the body's fixtures
 		if (el.triggerBody !== null) {
-			global.physicsWorld.destroyBody(el.triggerBody);
+			gPhysicsWorld.destroyBody(el.triggerBody);
 			el.triggerBody = null;
 		}
 		if (el.rearBoxBody !== null) {
-			global.physicsWorld.destroyBody(el.rearBoxBody);
+			gPhysicsWorld.destroyBody(el.rearBoxBody);
 			el.rearBoxBody = null;
 		}
 		el.active = false;
@@ -286,13 +292,13 @@ function makeTeleporter(index, x, z, entrySide, targetIndex) {
 		userData: {name: 'teleporter', id: index},
 	};
 
-	tp.triggerBody = global.physicsWorld.createBody(planeDef);
+	tp.triggerBody = gPhysicsWorld.createBody(planeDef);
 	tp.triggerBody.createFixture({shape: tpShape});
 
 	planeDef.position = {x: x + (dir.x * 0.5), y: z + (dir.z * 0.5)};
 	planeDef.userData = {};
 
-	tp.rearBoxBody = global.physicsWorld.createBody(planeDef);
+	tp.rearBoxBody = gPhysicsWorld.createBody(planeDef);
 	tp.rearBoxBody.createFixture({shape: tpShape});
 
 	// -- OTHER --

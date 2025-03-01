@@ -28,6 +28,8 @@ let gDeferredVelocity = null;
 let gDeferredRotation = null;
 /** @type {THREE.Euler} */
 const gCameraEuler = new THREE.Euler(0, 0, 0, 'YZX');
+/** @type {THREE.Camera} */
+let gCamera;
 
 const gZeroZero = new planck.Vec2(0, 0);
 const QUARTER_PI = Math.PI / 4;
@@ -48,6 +50,8 @@ function loadAssets(manager) {
  * @param {updatePositionCallback} updatePositionFunc
  */
 function setup(updatePositionFunc) {
+
+	gCamera = global.camera;
 
 	if (typeof updatePositionFunc === 'function') {
 		gUpdateMazePosition = updatePositionFunc;
@@ -80,9 +84,9 @@ function update() {
 		}
 		if (gDeferredRotation !== null) {
 			if (global.firstPersonModeActive) {
-				gCameraEuler.setFromQuaternion(global.camera.quaternion);
+				gCameraEuler.setFromQuaternion(gCamera.quaternion);
 				gCameraEuler.y -= gDeferredRotation;
-				global.camera.quaternion.setFromEuler(gCameraEuler);
+				gCamera.quaternion.setFromEuler(gCameraEuler);
 				gAngle += gDeferredRotation;
 			}
 			gDeferredRotation = null;
@@ -117,8 +121,8 @@ function update() {
 	}
 
 	// player light is locked to player
-	global.playerLight.position.x = gPlayer3DObject.position.x;
-	global.playerLight.position.z = gPlayer3DObject.position.z;
+	gPlayerLight.position.x = gPlayer3DObject.position.x;
+	gPlayerLight.position.z = gPlayer3DObject.position.z;
 
 	let actorMoving = actor.update();
 	actorMoving |= jump.update(gPlayer3DObject);

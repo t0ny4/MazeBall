@@ -41,9 +41,12 @@ let gCurrentMaze;
 let gWasSetupCalled = false;
 /** @type {Boolean} */
 let gKeyVisible = false;
+/** @type {planck.World} */
+let gPhysicsWorld;
 
 
 function setup() {
+	gPhysicsWorld = global.physicsWorld;
 	gScene = global.scene;
 	gExitLight = global.exitLight;
 
@@ -56,7 +59,7 @@ function setup() {
 	gDoorShapeHoriz = new planck.BoxShape(0.5, 0.04);
 	gDoorShapeVert = new planck.BoxShape(0.04, 0.5);
 
-	global.physicsWorld.addContactCallback('ball', 'closed_door', () => { sounds.play('locked'); });
+	gPhysicsWorld.addContactCallback('ball', 'closed_door', () => { sounds.play('locked'); });
 
 	gWasSetupCalled = true;
 }
@@ -129,7 +132,7 @@ function create(maze) {
 
 	// remove old door physics body if it exists
 	if (gDoorBody !== null) {
-		global.physicsWorld.destroyBody(gDoorBody);
+		gPhysicsWorld.destroyBody(gDoorBody);
 		gDoorBody = null;
 	}
 
@@ -184,7 +187,7 @@ function create(maze) {
 		position: {x: doorX, y: doorZ},
 		userData: 'closed_door',
 	};
-	gDoorBody = global.physicsWorld.createBody(closedDoorDefinition);
+	gDoorBody = gPhysicsWorld.createBody(closedDoorDefinition);
 	gDoorBody.createFixture({shape: doorShape});
 
 	// --- 3D ---
@@ -235,7 +238,7 @@ function collect() {
 
 	// remove closed door physics body
 	if (gDoorBody !== null) {
-		global.physicsWorld.destroyBody(gDoorBody);
+		gPhysicsWorld.destroyBody(gDoorBody);
 		gDoorBody = null;
 	}
 
@@ -262,7 +265,7 @@ function collect() {
 		position: {x: doorX, y: doorZ},
 		userData: 'open_door',
 	};
-	gDoorBody = global.physicsWorld.createBody(openDoorDefinition);
+	gDoorBody = gPhysicsWorld.createBody(openDoorDefinition);
 	gDoorBody.createFixture({shape: doorShape});
 
 	// move door mesh to open position

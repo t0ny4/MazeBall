@@ -17,6 +17,8 @@ const gPointerLockAvailable = 'pointerLockElement' in document;
 
 let gMousePitch = 0;
 let gMouseYaw = 0;
+/** @type {THREE.Camera} */
+let gCamera;
 
 const HALF_PI = Math.PI / 2;
 
@@ -27,6 +29,8 @@ function setup() {
 		console.log('browser does not support pointer lock, no first person view available');
 		return;
 	}
+
+	gCamera = global.camera;
 
 	setKeyHandler('first_person', toggleFirstPerson);
 
@@ -40,15 +44,15 @@ function setup() {
 		}
 		if (global.firstPersonModeActive) {
 			document.exitPointerLock();
-			global.camera.rotation.set(-HALF_PI, 0, 0);
-			global.camera.position.y = global.cameraYpos = config.defaultCameraY;
+			gCamera.rotation.set(-HALF_PI, 0, 0);
+			gCamera.position.y = global.cameraYpos = config.defaultCameraY;
 			unbindMouseMove(mouseUpdate);
 			player.hideMesh(false);
 			global.firstPersonModeActive = false;
 			console.log('first person view disabled');
 		} else {
-			global.camera.rotation.set(0, -player.getAngle(), 0);
-			global.camera.position.y = global.cameraYpos = player.getCameraHeight();
+			gCamera.rotation.set(0, -player.getAngle(), 0);
+			gCamera.position.y = global.cameraYpos = player.getCameraHeight();
 			bindMouseMove(mouseUpdate);
 			player.hideMesh(true);
 			global.firstPersonModeActive = true;
@@ -89,14 +93,14 @@ function update() {
 
 	if (gMousePitch !== 0 || gMouseYaw !== 0) {
 
-		gCameraEuler.setFromQuaternion(global.camera.quaternion);
+		gCameraEuler.setFromQuaternion(gCamera.quaternion);
 		gCameraEuler.x -= gMousePitch; // up/down
 		gCameraEuler.y -= gMouseYaw; // left/right
 		// constrain pitch
 		gCameraEuler.x = Math.max(-HALF_PI, Math.min(HALF_PI, gCameraEuler.x));
-		global.camera.quaternion.setFromEuler(gCameraEuler);
+		gCamera.quaternion.setFromEuler(gCameraEuler);
 
-		global.camera.getWorldDirection(gCameraDirection);
+		gCamera.getWorldDirection(gCameraDirection);
 		// a camera looks down it's negative z axis, so flip the z value
 		player.setAngle(Math.atan2(gCameraDirection.x, -gCameraDirection.z));
 

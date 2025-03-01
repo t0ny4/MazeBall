@@ -39,16 +39,19 @@ let gFloorMesh;
 let gCurrentMaze;
 /** @type {Number} */
 let gSensitivity = 0.9;
+/** @type {planck.World} */
+let gPhysicsWorld;
 
 
 function setup() {
+	gPhysicsWorld = global.physicsWorld;
 	gScene = global.scene;
 	gCamera = global.camera;
 	gExitLight = new THREE.PointLight(0x00ff00, 0);
 	gScene.add(gExitLight);
 	global.exitLight = gExitLight;
 	gCurrentMaze = {size: {x: 0, z: 0}};
-	global.physicsWorld.addContactCallback(
+	gPhysicsWorld.addContactCallback(
 		'ball',
 		'wall',
 		/** @param {planck.Contact} c */
@@ -130,7 +133,7 @@ function create(maze, sensitivity = 0.9) {
 
 	// clear the old maze from the physics world, if one exists
 	if (gMazePhysicsBodies.length > 0) {
-		gMazePhysicsBodies.forEach((body) => global.physicsWorld.destroyBody(body));
+		gMazePhysicsBodies.forEach((body) => gPhysicsWorld.destroyBody(body));
 		gMazePhysicsBodies.length = 0;
 	}
 
@@ -146,7 +149,7 @@ function create(maze, sensitivity = 0.9) {
 		for (let z = 0; z < maze.size.z; z++) {
 			if (maze.data[x][z] === false) {
 				bodyDefinition.position = {x, y: z};
-				const mazeBody = global.physicsWorld.createBody(bodyDefinition);
+				const mazeBody = gPhysicsWorld.createBody(bodyDefinition);
 				gMazePhysicsBodies.push(mazeBody);
 				mazeBody.createFixture({shape: boxShape});
 			}
