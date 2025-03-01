@@ -78,6 +78,7 @@ const config = {
 		orbit_controls: 'control>enter',
 		house_lights: 'shift>enter',
 		first_person: '+',
+		jump: '@Space',
 	},
 
 
@@ -89,6 +90,13 @@ const config = {
 	idleTimeout:		15,	// seconds
 	keyForce:			0.4,
 	lightYpos:			1.4,
+
+
+	// jump.js
+	/** @type {Object.<string, string | SoundInfo>} */
+	jumpSounds: {
+		jump: {filename: 'DM-CGS-21.ogg', volume: 0.3},
+	},
 
 
 	// render.js

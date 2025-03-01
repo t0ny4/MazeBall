@@ -74,6 +74,10 @@
  * @typedef {{name: 'teleporter', id: Number}} TpUserData
  */
 
+/**
+ * @typedef {{position: {x: Number, y: Number, z: Number}}} ObjectWithPosition
+ */
+
 /*
 	MazeObject.data is a 2D array representing the maze grid [x][z]
 	 Values from mazegen.js are:
@@ -89,6 +93,9 @@
      Added by key.js
 	  'K' : key
 	  'L' : locked door
+
+	 Added by teleporters.js
+	  'T' : teleporter
 
 	 MazeObject.exit is the hole in the wall where the player escapes the maze
 	 MazeObject.end is the square inside the maze, next to the exit

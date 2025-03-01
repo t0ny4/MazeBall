@@ -118,7 +118,7 @@ function update() {
 	if (distanceX !== 0 || distanceZ !== 0) {
 
 		// update 3D ball position to match physics ball
-		gBallMesh.position.set(physBallPos.x, gBallRadius, physBallPosZ);
+		gBallMesh.position.set(physBallPos.x, gBallMesh.position.y, physBallPosZ);
 
 		const distance = Math.sqrt((distanceX * distanceX) + (distanceZ * distanceZ));
 

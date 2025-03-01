@@ -7,6 +7,7 @@ import { keyX, keyY } from './controls';
 import config from './config';
 import global from './global';
 import * as actor from './objects/ball';
+import * as jump from './jump';
 
 
 /** @type {THREE.Mesh} */
@@ -39,6 +40,7 @@ const COS45 = Math.cos(QUARTER_PI);
  */
 function loadAssets(manager) {
 	actor.loadAssets(manager);
+	jump.loadAssets();
 }
 
 
@@ -59,6 +61,8 @@ function setup(updatePositionFunc) {
 	global.scene.add(gPlayerLight);
 
 	global.playerLight = gPlayerLight;
+
+	jump.setup(gPlayer3DObject);
 }
 
 
@@ -116,7 +120,8 @@ function update() {
 	global.playerLight.position.x = gPlayer3DObject.position.x;
 	global.playerLight.position.z = gPlayer3DObject.position.z;
 
-	const actorMoving = actor.update();
+	let actorMoving = actor.update();
+	actorMoving |= jump.update(gPlayer3DObject);
 
 	if (actorMoving) {
 		global.idleStartMs = 0;
@@ -160,6 +165,7 @@ function setNewMaze(maze) {
 	gAngle = -maze.start.angle;
 	gPlayerLight.position.set(maze.start.x, config.lightYpos, maze.start.z);
 	gPlayerLight.intensity = 0;
+	jump.reset(gPlayer3DObject);
 }
 
 
