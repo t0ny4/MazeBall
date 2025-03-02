@@ -44,6 +44,8 @@ let gBackPlaneMaterial;
 let gPhysicsWorld;
 /** @type {THREE.Scene} */
 let gScene;
+/** @type {Boolean} */
+let gActive;
 
 
 /**
@@ -108,6 +110,7 @@ function setup() {
 
 	gPhysicsWorld.addContactCallback('ball', 'teleporter', collision);
 	gWasSetupCalled = true;
+	gActive = false;
 }
 
 
@@ -184,6 +187,8 @@ function add(maze, texture) {
 			gScene.add(el.meshGroup);
 		}
 	});
+
+	gActive = true;
 }
 
 
@@ -204,6 +209,7 @@ function removeExisting() {
 		}
 		el.active = false;
 	});
+	gActive = false;
 }
 
 
@@ -363,7 +369,7 @@ function collision(_c, _u, userDataB) {
  * @returns {Boolean} true if teleporters need a renderer update
  */
 function update() {
-	if (!gWasSetupCalled || global.idleMode) {
+	if (!gWasSetupCalled || !gActive || global.idleMode) {
 		return false;
 	}
 	gFrontPlaneMaterial.uniforms.u_ticks.value += 0.00000020;
