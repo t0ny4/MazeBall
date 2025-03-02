@@ -26,6 +26,8 @@ let gFirstPersonAtStart = false;
 let gCamera;
 /** @type {THREE.PointLight} */
 let gPlayerLight;
+/** @type {Boolean} */
+let gJumpKey = false;
 
 
 function loadAssets() {
@@ -44,25 +46,11 @@ function setup(player) {
 	// this will always be the player's vertical position when not jumping
 	gInitialPlayerY = player.position.y;
 
-	setKeyHandler('jump', () => {
-		if (!gIsJumping) {
-			gIsJumping = true;
-			gFirstPersonAtStart = global.firstPersonModeActive;
-			const mazeGrid = getPlayerGridInfo();
-			// limit jump height when under a teleporter arch
-			if (mazeGrid.type === 'T') {
-				gMaxJump = 0.5;
-			} else {
-				gMaxJump = (gFirstPersonAtStart) ? 1.2 : 0.6;
-			}
-			gJumpProgress = -1;
-			if (gFirstPersonAtStart) {
-				gInitialCameraY = gCamera.position.y;
-			}
-			gInitialLightY = gPlayerLight.position.y;
-			play('jump');
-		}
-	});
+	setKeyHandler(
+		'jump',
+		() => { gJumpKey = true; },
+		() => { gJumpKey = false; }
+	);
 }
 
 
@@ -73,14 +61,32 @@ function setup(player) {
  */
 function update(player) {
 
-	if (!gIsJumping) {
+	if (!gIsJumping && !gJumpKey) {
 		return false;
 	}
 
-	const currentlyFirstPerson = global.firstPersonModeActive;
+	const {firstPersonModeActive} = global;
+
+	if (!gIsJumping) {
+		gIsJumping = true;
+		gFirstPersonAtStart = firstPersonModeActive;
+		const mazeGrid = getPlayerGridInfo();
+		// limit jump height when under a teleporter arch
+		if (mazeGrid.type === 'T') {
+			gMaxJump = 0.5;
+		} else {
+			gMaxJump = (gFirstPersonAtStart) ? 1.2 : 0.6;
+		}
+		gJumpProgress = -1;
+		if (gFirstPersonAtStart) {
+			gInitialCameraY = gCamera.position.y;
+		}
+		gInitialLightY = gPlayerLight.position.y;
+		play('jump');
+	}
 
 	// abort if view mode switched mid-jump
-	if (currentlyFirstPerson !== gFirstPersonAtStart) {
+	if (firstPersonModeActive !== gFirstPersonAtStart) {
 		// mode switch will have changed camera, so forget saved position
 		gInitialCameraY = null;
 		reset(player);
@@ -99,7 +105,7 @@ function update(player) {
 	/** @type {Number} 0 to gMaxJump */
 	const deltaY = (gMaxJump * y);
 
-	if (currentlyFirstPerson) {
+	if (firstPersonModeActive) {
 		gCamera.position.y = gInitialCameraY + deltaY;
 	}
 	player.position.y = gInitialPlayerY + deltaY;

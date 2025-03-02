@@ -51,16 +51,16 @@ function unbindMouseMove(handler) {
  * @param {string} key
  * @param {Function} handler
  */
-function setKeyHandler(key, handler) {
+function setKeyHandler(key, onPress, onRelease = undefined) {
 	if (!config.keys[key]) {
 		console.error('Unknown key index: ' + key);
 		return;
 	}
 	const keystr = config.keys[key];
 	if (keystr.includes('>')) {
-		bindKeyCombo(keystr, handler);
+		bindKeyCombo(keystr, {onPressed: onPress, onReleased: onRelease});
 	} else {
-		bindKey(keystr, handler);
+		bindKey(keystr, {onPressed: onPress, onReleased: onRelease});
 	}
 }
 
