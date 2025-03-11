@@ -1,6 +1,6 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
-import stylisticJs from '@stylistic/eslint-plugin-js';
+import stylistic from '@stylistic/eslint-plugin';
 
 export default [
 	pluginJs.configs.recommended,
@@ -11,10 +11,10 @@ export default [
     },
     {
     	plugins: {
-            '@stylistic/js': stylisticJs
+            '@stylistic': stylistic
         },
     	rules: {
-    		"@stylistic/js/semi": "warn",
+    		"@stylistic/semi": "warn",
     		"array-bracket-spacing": "warn",
     		"arrow-parens": "warn",
     		"arrow-spacing": "warn",
@@ -24,7 +24,7 @@ export default [
 			"computed-property-spacing": "warn",
 			"dot-location": "warn",
 			"eol-last": "warn",
-			"@stylistic/js/function-call-spacing": "warn",
+			"@stylistic/function-call-spacing": "warn",
 			"function-paren-newline": "warn",
 			"generator-star-spacing": "warn",
 			"implicit-arrow-linebreak": "warn",
