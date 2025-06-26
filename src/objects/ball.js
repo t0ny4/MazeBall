@@ -125,15 +125,12 @@ function update() {
 		// tell maze about new position
 		gUpdateMazePosition(physBallPos.x, gBallRadius, physBallPosZ, distance);
 
-		// no need to calculate rotation in 1st person mode, as ball can't be seen
-		if (!global.firstPersonModeActive) {
-			// distance travelled / radius = rotation in radians
-			gAxisMatrix.makeRotationZ(-distanceX / gBallRadius);
-			gBallMesh.matrix.premultiply(gAxisMatrix);
-			gAxisMatrix.makeRotationX(distanceZ / gBallRadius);
-			gBallMesh.matrix.premultiply(gAxisMatrix);
-			gBallMesh.rotation.setFromRotationMatrix(gBallMesh.matrix);
-		}
+		// distance travelled / radius = rotation in radians
+		gAxisMatrix.makeRotationZ(-distanceX / gBallRadius);
+		gBallMesh.matrix.premultiply(gAxisMatrix);
+		gAxisMatrix.makeRotationX(distanceZ / gBallRadius);
+		gBallMesh.matrix.premultiply(gAxisMatrix);
+		gBallMesh.rotation.setFromRotationMatrix(gBallMesh.matrix);
 
 		return true;
 	}
