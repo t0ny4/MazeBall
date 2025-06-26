@@ -23,7 +23,6 @@ let gRenderer;
  */
 function setup(width, height, el = document.body) {
 
-	global.renderUpdate = update;
 	global.cameraYpos = config.defaultCameraY;
 
 	gScene = new THREE.Scene();
@@ -65,12 +64,14 @@ function setup(width, height, el = document.body) {
 
 /**
  * Updates the camera position if needed. Calls the THREE renderer's render() method
- *  if the doUpdate parameter is true or if the camera is still moving
- * @param {Boolean} doUpdate default true
+ *  if the requestRender parameter is true, if the camera is still moving or
+ *  if global.forceFrameRender is true
+ * @param {Boolean} requestRender default true
+ * @returns {Boolean} true if render() called
  */
-function update(doUpdate = true) {
+function update(requestRender = true) {
 
-	let cameraMoving = false;
+	let doRender = requestRender;
 
 	// we only control the camera if orbit controls is not enabled
 	if (!global.orbitControlsEnabled) {
@@ -89,7 +90,7 @@ function update(doUpdate = true) {
 
 			if (xDiff !== 0 || zDiff !== 0) {
 				// camera is still moving, need to do a renderer update
-				cameraMoving = true;
+				doRender = true;
 
 				const cameraEase = global.mazeExited ? config.cameraExitEase : config.cameraEase;
 
@@ -107,10 +108,18 @@ function update(doUpdate = true) {
 		}
 	}
 
-	if (doUpdate || cameraMoving) {
+	if (global.forceFrameRender) {
+		doRender = true;
+		global.forceFrameRender = false;
+	}
+
+	if (doRender) {
 		// console.log('render.update() calling gRenderer.render()');
 		gRenderer.render(gScene, gCamera);
+		return true;
 	}
+
+	return false;
 }
 
 

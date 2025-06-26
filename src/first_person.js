@@ -58,7 +58,7 @@ function setup() {
 			global.firstPersonModeActive = true;
 			console.log('first person view enabled');
 		}
-		global.renderUpdate();
+		global.forceFrameRender = true;
 	});
 }
 

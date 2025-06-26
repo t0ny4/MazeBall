@@ -83,7 +83,7 @@ function keyHandlerControls() {
 		console.log('Orbit controls disabled');
 		gCamera.position.set(playerPos.x, gCameraYpos, playerPos.z);
 		gCamera.rotation.set(3 * Math.PI / 2, 0, 0);
-		global.renderUpdate();
+		global.forceFrameRender = true;
 	}
 }
 
@@ -102,7 +102,7 @@ function keyHandlerLight() {
 		console.log('House lights down');
 	}
 
-	global.renderUpdate();
+	global.forceFrameRender = true;
 }
 
 

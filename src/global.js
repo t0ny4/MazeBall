@@ -27,11 +27,6 @@ const global = {
 	playerLight: null,
 	/** @type {THREE.WebGLRenderer} */
 	renderer: null,
-	/**
-	 * calls render.update()
-	 * @type {Function}
-	 */
-	renderUpdate: () => { console.warn('global.renderUpdate not set'); },
 	/** @type {THREE.Scene} */
 	scene: null,
 	/** @type {THREE.Texture} */
@@ -40,6 +35,8 @@ const global = {
 	errorMesh: null,
 	/** @type {HTMLElement} */
 	statusBar: null,
+	/** @type {Boolean} true forces a call to THREE.Renderer:render() for the current frame */
+	forceFrameRender: false,
 };
 
 
