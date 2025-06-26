@@ -312,7 +312,7 @@ function makeTeleporter(index, x, z, entrySide, targetIndex) {
 	tp.index = index;
 	tp.target = targetIndex;
 	// position to place the player when they arrive at this teleporter from another
-	tp.exit = {x: x + (dir.x * 0.08), z: z + (dir.z * 0.08)};
+	tp.exit = {x: x - (dir.x * 0.1), z: z - (dir.z * 0.1)};
 	tp.cameraRotation = cameraRotation;
 	tp.active = true;
 }
