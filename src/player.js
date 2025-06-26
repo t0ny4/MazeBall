@@ -231,14 +231,6 @@ function setAngle(a) {
 }
 
 
-/**
- * @param {bool} flag
- */
-function hideMesh(flag) {
-	actor.hide(flag);
-}
-
-
 const _MODULE = 'player.js';
 
 
@@ -247,7 +239,6 @@ export {
 	getAngle,
 	getCameraHeight,
 	getPosition,
-	hideMesh,
 	loadAssets,
 	setAngle,
 	setNewMaze,

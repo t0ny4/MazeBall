@@ -47,14 +47,12 @@ function setup() {
 			gCamera.rotation.set(-HALF_PI, 0, 0);
 			gCamera.position.y = global.cameraYpos = config.defaultCameraY;
 			unbindMouseMove(mouseUpdate);
-			player.hideMesh(false);
 			global.firstPersonModeActive = false;
 			console.log('first person view disabled');
 		} else {
 			gCamera.rotation.set(0, -player.getAngle(), 0);
 			gCamera.position.y = global.cameraYpos = player.getCameraHeight();
 			bindMouseMove(mouseUpdate);
-			player.hideMesh(true);
 			global.firstPersonModeActive = true;
 			console.log('first person view enabled');
 		}

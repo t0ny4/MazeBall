@@ -150,21 +150,12 @@ function getCameraHeight() {
 }
 
 
-/**
- * @param {bool} b
- */
-function hide(b) {
-	gBallMesh.visible = !b;
-}
-
-
 const _MODULE = 'ball.js';
 
 
 export {
 	_MODULE,
 	getCameraHeight,
-	hide,
 	loadAssets,
 	setup,
 	update,
