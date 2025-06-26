@@ -39,6 +39,7 @@ function setup(width, height, el = document.body) {
 	gRenderer.setPixelRatio(window.devicePixelRatio);
 	gRenderer.setSize(width, height);
 
+	updateFromWindowSize();
 	window.addEventListener('resize', onWindowResize);
 
 	gScene.background = new THREE.Color(config.bgColour);
@@ -162,10 +163,15 @@ function fadeOut() {
 
 
 function onWindowResize() {
+	updateFromWindowSize();
+	update();
+}
+
+
+function updateFromWindowSize() {
 	gCamera.aspect = window.innerWidth / window.innerHeight;
 	gCamera.updateProjectionMatrix();
 	gRenderer.setSize(window.innerWidth, window.innerHeight);
-	update();
 }
 
 
