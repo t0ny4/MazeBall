@@ -72,11 +72,7 @@ function update(player) {
 		gFirstPersonAtStart = firstPersonModeActive;
 		const mazeGrid = getPlayerGridInfo();
 		// limit jump height when under a teleporter arch
-		if (mazeGrid.type === 'T') {
-			gMaxJump = 0.5;
-		} else {
-			gMaxJump = (gFirstPersonAtStart) ? 1.2 : 0.6;
-		}
+		gMaxJump = (mazeGrid.type === 'T') ? 0.5 : 1.1;
 		gJumpProgress = -1;
 		if (gFirstPersonAtStart) {
 			gInitialCameraY = gCamera.position.y;
@@ -87,7 +83,7 @@ function update(player) {
 
 	// abort if view mode switched mid-jump
 	if (firstPersonModeActive !== gFirstPersonAtStart) {
-		// mode switch will have changed camera, so forget saved position
+		// mode switch will have changed camera, so reset must ignore initial position
 		gInitialCameraY = null;
 		reset(player);
 		return true;
@@ -106,8 +102,10 @@ function update(player) {
 	const deltaY = (gMaxJump * y);
 
 	if (firstPersonModeActive) {
-		gCamera.position.y = gInitialCameraY + deltaY;
+		// jump the camera a bit higher in first person mode, to get a better view over the walls
+		gCamera.position.y = gInitialCameraY + (deltaY * 1.28);
 	}
+
 	player.position.y = gInitialPlayerY + deltaY;
 	gPlayerLight.position.y = gInitialLightY + deltaY;
 	return true;
