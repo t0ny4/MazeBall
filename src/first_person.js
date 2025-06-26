@@ -21,6 +21,7 @@ let gMouseYaw = 0;
 let gCamera;
 
 const HALF_PI = Math.PI / 2;
+const PITCH_CONSTRAINT = HALF_PI - 0.00001;
 
 
 function setup() {
@@ -95,7 +96,7 @@ function update() {
 		gCameraEuler.x -= gMousePitch; // up/down
 		gCameraEuler.y -= gMouseYaw; // left/right
 		// constrain pitch
-		gCameraEuler.x = Math.max(-HALF_PI, Math.min(HALF_PI, gCameraEuler.x));
+		gCameraEuler.x = Math.max(-PITCH_CONSTRAINT, Math.min(PITCH_CONSTRAINT, gCameraEuler.x));
 		gCamera.quaternion.setFromEuler(gCameraEuler);
 
 		gCamera.getWorldDirection(gCameraDirection);
