@@ -95,7 +95,7 @@ function generateRandomMaze(xSize, zSize, seed) {
 	} else if (maze.data[x][z + 1] !== false) { // down
 		rot = 2;
 	} else if (maze.data[x + 1][z] !== false) { // right
-		rot = 3;
+		rot = -1;
 	}
 
 	maze.data[maze.start.x][maze.start.z] = 'S';
