@@ -15,6 +15,7 @@ import * as key from './src/objects/key';
 import * as maze from './src/objects/maze';
 import * as player from './src/player';
 import * as sounds from './src/sounds';
+import * as minimap from './src/minimap';
 
 
 // override javascript builtin prng with alea, using seed if configured
@@ -64,10 +65,11 @@ function setup() {
 	physics.setup();
 	render.setup(window.innerWidth, window.innerHeight - gStatusHeight);
 	// the rest of the setup methods can now be called in (almost) any order
-	// debug, firstPerson, key & sounds can be commented out to disable their functionality
+	// debug, firstPerson, minimap, key & sounds can be commented out to disable their functionality
 	controls.setup();
 	debug.setup();
 	firstPerson.setup();
+	minimap.setup();
 	maze.setup();
 	key.setup(); // cannot be called before maze.setup() [requires global.exitLight]
 	player.setup(maze.updatePlayerPosition);
@@ -152,7 +154,9 @@ function game_loop() {
 
 	physics.update();
 
-	render.update(renderRequired);
+	if (render.update(renderRequired)) {
+		minimap.update();
+	}
 
 	requestAnimationFrame(game_loop);
 }

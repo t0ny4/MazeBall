@@ -79,11 +79,17 @@ const config = {
 		house_lights: 'shift>enter',
 		first_person: '+',
 		jump: '@Space',
+		cycle_minimap: 'm',
 	},
 
 
 	// first_person.js
 	mouseSensitivity:	0.005,
+
+
+	// minimap.js
+	mapWidthRatio:		0.25,
+	mapBorderRatio:		0.0125,
 
 
 	// player.js

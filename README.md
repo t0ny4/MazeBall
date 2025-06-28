@@ -37,10 +37,11 @@ A modern re-implementation of Astray [[https://github.com/wwwtyro/Astray](https:
 ### _Extra Features_
 | | |
 |-|--|
-| [Spacebar] | Jump |
+| [Spacebar] | Jump (peek over walls in first person view) |
 | [Keypad +] | Toggles first person view (When Orbit controls are not enabled) |
 | [Ctrl] & [Keypad Enter] | Toggles Orbit controls (When not in first person view) |
 | [Shift] & [Keypad Enter] | Toggles "House Lights" |
 | [Esc] | Exits first person mode |
+| [M] | Cycle first person view minimap mode (Perspective > Orthographic > Disabled) |
 
 ---
