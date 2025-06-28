@@ -17,11 +17,9 @@ let gRenderer;
 
 
 /**
- * @param {Number} width
- * @param {Number} height
  * @param {HTMLElement} el - default: document.body
  */
-function setup(width, height, el = document.body) {
+function setup(el = document.body) {
 
 	global.cameraYpos = config.defaultCameraY;
 
@@ -37,7 +35,7 @@ function setup(width, height, el = document.body) {
 	el.appendChild(gRenderer.domElement);
 
 	gRenderer.setPixelRatio(window.devicePixelRatio);
-	gRenderer.setSize(width, height);
+	gRenderer.setSize(window.innerWidth, window.innerHeight);
 
 	updateFromWindowSize();
 	window.addEventListener('resize', onWindowResize);

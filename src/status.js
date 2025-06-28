@@ -25,7 +25,6 @@ function setup() {
 	gStatusBar.classList.add('status');
 	document.body.append(gStatusBar);
 	gStatusHeight = (gStatusBar === null) ? 0 : gStatusBar.clientHeight;
-	return gStatusHeight;
 }
 
 

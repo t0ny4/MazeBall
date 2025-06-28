@@ -36,14 +36,13 @@ const GameStates = Object.freeze({
 
 let gLevel = 1;
 let gGameState = GameStates.init;
-let gStatusHeight = 0;
 
 // calling setup() from within THREE.LoadingManager's onLoad() causes problems with
 // error handling, so let onLoad() resolve a Promise and await on the Promise instead.
 const {promise, resolve} = Promise.withResolvers();
 
 document.addEventListener('DOMContentLoaded', () => {
-	gStatusHeight = status.setup();
+	status.setup();
 	status.message('Loading...');
 	loadAssets(
 		// sounds must come last
@@ -63,7 +62,7 @@ setup();
 function setup() {
 	// physics & render must come first (in either order)
 	physics.setup();
-	render.setup(window.innerWidth, window.innerHeight - gStatusHeight);
+	render.setup();
 	// the rest of the setup methods can now be called in (almost) any order
 	// debug, firstPerson, minimap, key & sounds can be commented out to disable their functionality
 	controls.setup();
