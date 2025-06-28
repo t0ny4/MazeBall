@@ -25,6 +25,10 @@ Math.random = !config.randomSeed ? aleaPRNG() : aleaPRNG(config.randomSeed);
 global.errorTexture = makeErrorTexture();
 global.errorMesh = makeErrorMesh();
 
+/**
+ * @readonly
+ * @enum {number}
+ */
 const GameStates = Object.freeze({
 	init: 0,
 	fadeIn: 1,
@@ -35,6 +39,7 @@ const GameStates = Object.freeze({
 });
 
 let gLevel = 1;
+/** @type {GameStates} */
 let gGameState = GameStates.init;
 
 // calling setup() from within THREE.LoadingManager's onLoad() causes problems with
