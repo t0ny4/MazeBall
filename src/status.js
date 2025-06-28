@@ -3,8 +3,6 @@
 /** @type {HTMLDivElement} */
 let gStatusBar = null;
 /** @type {Number} */
-let gStatusHeight = 0;
-/** @type {Number} */
 let gLevel = 0;
 /** @type {Number} */
 let gImpacts = 0;
@@ -24,7 +22,6 @@ function setup() {
 	gStatusBar.id = 'statusBar';
 	gStatusBar.classList.add('status');
 	document.body.append(gStatusBar);
-	gStatusHeight = (gStatusBar === null) ? 0 : gStatusBar.clientHeight;
 }
 
 
