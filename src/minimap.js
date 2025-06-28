@@ -11,6 +11,10 @@ const HALF_PI = Math.PI / 2;	// 90 degrees
 const gMainViewport = new THREE.Vector4();
 const gEuler = new THREE.Euler(0, 0, 0, 'YZX');
 
+/**
+ * @readonly
+ * @enum {number}
+ */
 const MapStates = Object.freeze({
 	disabled: 0,
 	perpective: 1,
