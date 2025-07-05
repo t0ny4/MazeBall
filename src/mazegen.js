@@ -208,11 +208,14 @@ function generateStartAndExit(size) {
 	const start = {};
 	const exit = {};
 
-	let top = gMazeRnd() > 0.5;
-	let left = gMazeRnd() > 0.5;
+	const halfX = (size.x - 1) / 2;
+	const halfZ = (size.z - 1) / 2;
 
-	start.x = left ? 1 : size.x - 2;
-	start.z = top ? 1 : size.z - 2;
+	start.x = (gMazeRnd.range(0, halfX - 1) * 2) + 1;
+	start.z = (gMazeRnd.range(0, halfZ - 1) * 2) + 1;
+
+	let top = start.z < halfZ;
+	let left = start.x < halfX;
 
 	const r = gMazeRnd();
 	if (r > 0.5) {
