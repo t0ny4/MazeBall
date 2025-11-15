@@ -8,7 +8,6 @@ const global = {
 	_MODULE: 'global.js',
 
 	cameraYpos: 0, // height above maze floor
-	idleStartMs: 0,
 
 	firstPersonModeActive: false,
 	mazeExited: false,

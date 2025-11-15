@@ -30,6 +30,8 @@ let gDeferredRotation = null;
 const gCameraEuler = new THREE.Euler(0, 0, 0, 'YZX');
 /** @type {THREE.Camera} */
 let gCamera;
+/** time (in milliseconds) when player last stopped moving. 0 = player is moving */
+let gIdleStartMs = 0;
 
 const gZeroZero = new planck.Vec2(0, 0);
 const QUARTER_PI = Math.PI / 4;
@@ -128,14 +130,14 @@ function update() {
 	actorMoving |= jump.update(gPlayer3DObject);
 
 	if (actorMoving) {
-		global.idleStartMs = 0;
+		gIdleStartMs = 0;
 		global.idleMode = false;
 	}
 
 	if (!actorMoving && !global.idleMode) {
-		if (global.idleStartMs === 0) {
-			global.idleStartMs = Date.now();
-		} else if (Date.now() - global.idleStartMs > config.idleTimeout * 1000) {
+		if (gIdleStartMs === 0) {
+			gIdleStartMs = Date.now();
+		} else if (Date.now() - gIdleStartMs > config.idleTimeout * 1000) {
 			global.idleMode = true;
 		}
 	}
