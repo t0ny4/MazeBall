@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@rwh/keystrokes": "^1.5.6",
-		"planck": "^1.4.2",
+		"planck": "^1.4.3",
 		"three": "~0"
 	},
 	"devDependencies": {
