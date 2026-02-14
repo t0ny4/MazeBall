@@ -34,8 +34,7 @@ const GameStates = Object.freeze({
 	fadeIn: 1,
 	play: 2,
 	fadeOut: 3,
-	pause: 4,
-	idle: 5,
+	delay: 4,
 });
 
 let gLevel = 1;
@@ -59,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // wait here until loadAssets() has completed
 await promise;
 setup();
+requestAnimationFrame(game_loop);
 
 
 /**
@@ -78,8 +78,6 @@ function setup() {
 	key.setup(); // cannot be called before maze.setup() [requires global.exitLight]
 	player.setup(maze.updatePlayerPosition);
 	sounds.setup();
-	// now everything is set up, initiate the game loop
-	requestAnimationFrame(game_loop);
 }
 
 
@@ -133,19 +131,14 @@ function game_loop() {
 			// calling update() allows the player object to keep moving after exiting the maze
 			player.update();
 			if (render.fadeOut()) {
-				gGameState = GameStates.pause;
+				gGameState = GameStates.delay;
 			}
 		break;
 
-		case GameStates.pause:
-			// insert a short delay before changing to the next level
-			setTimeout(() => { gGameState = GameStates.init; }, 800);
-			gGameState = GameStates.idle;
-		break;
-
-		case GameStates.idle:
-			// nothing to do but wait
-		break;
+		case GameStates.delay:
+			// insert a short delay before restarting game_loop on the next level
+			setTimeout(() => { gGameState = GameStates.init; requestAnimationFrame(game_loop); }, 800);
+			return;
 
 		default:
 			console.log('game_loop(): Unknown game state: ' + gGameState);
