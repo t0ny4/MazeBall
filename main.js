@@ -137,7 +137,10 @@ function game_loop() {
 
 		case GameStates.delay:
 			// insert a short delay before restarting game_loop on the next level
-			setTimeout(() => { gGameState = GameStates.init; requestAnimationFrame(game_loop); }, 800);
+			setTimeout(() => {
+				gGameState = GameStates.init;
+				requestAnimationFrame(game_loop);
+			}, 800);
 			return;
 
 		default:
