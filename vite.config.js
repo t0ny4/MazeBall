@@ -6,19 +6,33 @@ export default {
 		PreprocessorDirectives(),
 	],
 	build: {
-		//minify: false,
-		rollupOptions: {
+		// minify: false,
+		chunkSizeWarningLimit: 572300,
+		rolldownOptions: {
 			output: {
-				manualChunks: {
-					three: ['three'],
-					threeaddons: ['three/addons'],
-					keystrokes: ['@rwh/keystrokes'],
-					planck: ['planck'],
+				codeSplitting: {
+					groups: [
+						{
+							name: 'keystrokes',
+							test: /keystrokes/,
+						},
+						{
+							name: 'three',
+							test: /build/,
+						},
+						{
+							name: 'planck',
+							test: /planck/,
+						},
+						{
+							name: 'threeaddons',
+							test: /examples/,
+						},
+					]
 				}
 			}
 		},
     	target: 'esnext',
-    	chunkSizeWarningLimit: '533K', // this is how big three.js r174 is
 	},
 	appType: 'mpa', // enable 404 for missing files
 }

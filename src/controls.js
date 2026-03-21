@@ -49,7 +49,8 @@ function unbindMouseMove(handler) {
 
 /**
  * @param {string} key
- * @param {Function} handler
+ * @param {Function} onPress
+ * @param {Function} onRelease
  */
 function setKeyHandler(key, onPress, onRelease = undefined) {
 	if (!config.keys[key]) {
