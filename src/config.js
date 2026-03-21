@@ -115,6 +115,16 @@ const config = {
 };
 
 
+/** @type {config} */
+let config_export;
+
+// #if (DEV)
+/*
+ In development mode, Object.freeze() and Proxy() are used to ensure that only existing properties
+  of the object can be used and that they are read only.
+*/
+console.log('config.js in development mode.');
+
 const handler = {
 	get(target, prop) {
 		if (prop in target) {
@@ -133,12 +143,13 @@ const handler = {
 	}
 };
 
+// eslint-disable-next-line no-useless-assignment
+config_export = new Proxy(Object.freeze(config), handler);
 
-/**
- * freeze() and Proxy ensure that only existing properties of the object can be used
- *  and that they are read only.
- * @type {config}
- */
-export default new Proxy(Object.freeze(config), handler);
+// #else
 
-// export default config;
+config_export = config;
+
+// #endif
+
+export default config_export;

@@ -1,5 +1,10 @@
+import PreprocessorDirectives from 'unplugin-preprocessor-directives/vite'
+
 export default {
 	base: './',
+	plugins: [
+		PreprocessorDirectives(),
+	],
 	build: {
 		//minify: false,
 		rollupOptions: {

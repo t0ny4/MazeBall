@@ -39,6 +39,16 @@ const global = {
 };
 
 
+/** @type{global} */
+let global_export;
+
+// #if (DEV)
+/*
+ In development mode, Object.seal() and Proxy() are used to ensure that only existing properties
+  of the object can be used. i.e. you cannot accidentally create new global variables.
+*/
+console.log('global.js in development mode.');
+
 const handler = {
 	get(target, prop) {
 		if (prop in target) {
@@ -61,12 +71,13 @@ const handler = {
 	}
 };
 
+// eslint-disable-next-line no-useless-assignment
+global_export = new Proxy(Object.seal(global), handler);
 
-/**
- * The seal() and Proxy ensure that only existing properties of the object can be used
- *  You cannot accidentally create new global variables.
- * @type{global}
- */
-export default new Proxy(Object.seal(global), handler);
+// #else
 
-// export default global;
+global_export = global;
+
+// #endif
+
+export default global_export;
